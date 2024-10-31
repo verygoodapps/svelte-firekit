@@ -1,5 +1,5 @@
 <script>
-    import ResetPassword from "$lib/auth/reset-password.svelte";
+    import UserButton from "$lib/auth/user-button.svelte";
 </script>
 
-<ResetPassword />
+<UserButton />
