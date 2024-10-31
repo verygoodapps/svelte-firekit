@@ -1,21 +1,20 @@
 <script lang="ts">
-	import { signInWithEmail } from "$lib/auth";
-	import { signInSchema, type SignInSchema } from "$lib/schemas/sign-in";
+	import { signInWithEmail } from "../../auth.js";
+	import { signInSchema } from "../../schemas/sign-in.js";
 	import {
-		superForm,
-		type Infer,
-		type SuperValidated,
+		superForm, defaults
 	} from "sveltekit-superforms";
-	import { zodClient } from "sveltekit-superforms/adapters";
-	import { Input } from "$lib/components/ui/input";
-	import Button from "$lib/components/ui/button/button.svelte";
-	let { data }: { data: SuperValidated<Infer<SignInSchema>> } = $props();
+	import { Input } from "../ui/input/index.js";
+	import Button from "../ui/button/button.svelte";
+	import { valibot } from 'sveltekit-superforms/adapters';
 
-	import * as Form from "$lib/components/ui/form";
+const data = defaults(valibot(signInSchema));
+
+	import * as Form from "../ui/form/index.js";
 	import { toast } from "svelte-sonner";
 
 	const form = superForm(data, {
-		validators: zodClient(signInSchema),
+			validators: valibot(signInSchema),
 		dataType: "json",
 		SPA: true,
 		resetForm: false,
@@ -53,21 +52,23 @@
 	</Form.Field>
 	<Form.Field {form} name="password">
 		<Form.Control >
-			  {#snippet children({ props })}
+			{#snippet children({ props })}
 
-			<div class="flex w-full items-center justify-between">
-				<Form.Label>Password</Form.Label>
-				<Button variant="link" class="text-sm" href="/reset-password "
-					>I forgot my password</Button
-				>
-			</div>
-			<Input
-				{...props} 
-				bind:value={$formData.password}
-				placeholder="*********"
-				type="password"
-			/>
-      {/snippet}
+				<div class="flex w-full items-center justify-between">
+					<Form.Label>Password</Form.Label>
+					<Button variant="link" class="text-sm" href="/reset-password "
+						>
+						I forgot my password
+						</Button
+					>
+				</div>
+				<Input
+					{...props} 
+					bind:value={$formData.password}
+					placeholder="*********"
+					type="password"
+				/>
+      		{/snippet}
 
 		</Form.Control>
 		<Form.FieldErrors />

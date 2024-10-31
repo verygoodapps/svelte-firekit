@@ -1,25 +1,22 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
 	import { sendPasswordReset } from "$lib/auth.js";
-	import * as Form from "$lib/components/ui/form";
-	import { Input } from "$lib/components/ui/input";
+	import * as Form from "../ui/form/index.js";
+	import { Input } from "../ui/input/index.js";
 	import {
 		resetPasswordSchema,
-		type ResetPasswordSchema,
-	} from "$lib/schemas/reset-password";
+	} from "../../schemas/reset-password.js";
 	import { toast } from "svelte-sonner";
 	import {
-		type SuperValidated,
-		type Infer,
-		superForm,
+		superForm,defaults
 	} from "sveltekit-superforms";
 	import { zodClient } from "sveltekit-superforms/adapters";
+	import { valibot } from 'sveltekit-superforms/adapters';
 
-	let { data }: { data: SuperValidated<Infer<ResetPasswordSchema>> } =
-		$props();
+const data = defaults(valibot(resetPasswordSchema));
 
 	const form = superForm(data, {
-		validators: zodClient(resetPasswordSchema),
+		validators: valibot(resetPasswordSchema),
 		dataType: "json",
 		SPA: true,
 		resetForm: false,
@@ -48,14 +45,14 @@
 <form method="POST" use:enhance class="space-y-4">
 	<Form.Field {form} name="email">
 		<Form.Control >
-			  {#snippet children({ props })}
-        <Form.Label>Email</Form.Label>
-        <Input {...props} bind:value={$formData.email}  placeholder="you@email.com"/>
-      {/snippet}
+		{#snippet children({ props })}
+        	<Form.Label>Email address</Form.Label>
+        	<Input {...props} bind:value={$formData.email}  placeholder="you@email.com"/>
+      	{/snippet}
 		
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
 
-	<Form.Button>Send Email</Form.Button>
+	<Form.Button class="w-full">Send Email</Form.Button>
 </form>

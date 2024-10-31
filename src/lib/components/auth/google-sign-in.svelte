@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { signInWithGoogle } from "$lib/auth.js";
 	import Button from "../ui/button/button.svelte";
+	let { label = "Sign in" }: { label: string } = $props();
 </script>
 
 <Button onclick={signInWithGoogle} class="w-full gap-2" variant="outline">
@@ -41,5 +42,5 @@
 			</clipPath>
 		</defs>
 	</svg>
-	Sign in with Google
+	{label} with Google
 </Button>

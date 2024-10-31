@@ -1,8 +1,15 @@
-import { z } from 'zod';
+import * as v from 'valibot';
 
-export const signInSchema = z.object({
-	email: z.string().email(),
-	password: z.string().min(8).max(100)
+export const signInSchema = v.object({
+
+	email: v.pipe(
+		v.string(),
+		v.nonEmpty('Please enter your email.'),
+		v.email('The email address is badly formatted.')
+	),
+	password: v.pipe(
+		v.string(),
+		v.nonEmpty('Please enter your password.'),
+		v.minLength(8, 'Your password must have 8 characters or more.')
+	),
 });
-
-export type SignInSchema = typeof signInSchema;

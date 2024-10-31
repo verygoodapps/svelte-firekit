@@ -1,10 +1,28 @@
-import { z } from 'zod';
+import * as v from 'valibot';
 
-export const signUpSchema = z.object({
-	firstName: z.string().min(1, 'First name is required'),
-	lastName: z.string().min(1, 'Last name is required'),
-	email: z.string().email('Invalid email address'),
-	password: z.string().min(8, 'Password must be at least 8 characters long')
+export const signUpSchema = v.object({
+	firstName: v.pipe(
+		v.string(),
+		v.nonEmpty('Please enter your first name.')
+	),
+	lastName: v.pipe(
+		v.string(),
+		v.nonEmpty('Please enter your last name.')
+	),
+	email: v.pipe(
+		v.string(),
+		v.nonEmpty('Please enter your email.'),
+		v.email('The email address is badly formatted.')
+	),
+	password: v.pipe(
+		v.string(),
+		v.nonEmpty('Please enter your password.'),
+		v.minLength(8, 'Your password must have 8 characters or more.')
+	),
+	agreeToTerms: v.pipe(
+		v.boolean(),
+		v.custom((value) => value === true,
+			'You must agree to the terms and conditions.',
+		)
+	)
 });
-
-export type SignUpSchema = typeof signUpSchema;

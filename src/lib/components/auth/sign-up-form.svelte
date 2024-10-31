@@ -1,20 +1,19 @@
 <script lang="ts">
-	import { registerWithEmail } from "$lib/auth";
-	import * as Form from "$lib/components/ui/form";
-	import { Input } from "$lib/components/ui/input";
-	import { signUpSchema, type SignUpSchema } from "$lib/schemas/sign-up";
+	import { registerWithEmail } from "../../auth.js";
+	import * as Form from "../ui/form/index.js";
+	import { Input } from "../ui/input/index.js";
+	import { signUpSchema } from "../../schemas/sign-up.js";
 	import { toast } from "svelte-sonner";
 	import {
-		type SuperValidated,
-		type Infer,
-		superForm,
+		superForm,defaults
 	} from "sveltekit-superforms";
-	import { zodClient } from "sveltekit-superforms/adapters";
-
-	let { data }: { data: SuperValidated<Infer<SignUpSchema>> } = $props();
+	import { valibot } from 'sveltekit-superforms/adapters';
+    import Button from "../ui/button/button.svelte";
+    import Checkbox from "../ui/checkbox/checkbox.svelte";
+const data = defaults(valibot(signUpSchema));
 
 	const form = superForm(data, {
-		validators: zodClient(signUpSchema),
+			validators: valibot(signUpSchema),
 		dataType: "json",
 		SPA: true,
 		resetForm: false,
@@ -44,15 +43,14 @@
 	<div class="grid grid-cols-2 gap-4">
 		<Form.Field {form} name="firstName">
 			<Form.Control >
-				  {#snippet children({ props })}
-
-				<Form.Label>First Name</Form.Label>
-				<Input
-					{...props}
-					bind:value={$formData.firstName}
-					placeholder="John"
-				/>
-      {/snippet}
+				{#snippet children({ props })}
+					<Form.Label>First Name</Form.Label>
+					<Input
+						{...props}
+						bind:value={$formData.firstName}
+						placeholder="John"
+					/>
+      			{/snippet}
 
 			</Form.Control>
 			<Form.FieldErrors />
@@ -96,6 +94,19 @@
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
+	<Form.Field {form} name="agreeToTerms">
+		<Form.Control >
+				  {#snippet children({ props })}
+        <Checkbox {...props} bind:checked={$formData.agreeToTerms} />
 
+		          <Form.Label>
+I accept the 
+<Button variant="link" href="/terms-and-conditions" class="p-0">Terms and Conditions</Button> 
+</Form.Label>
+
+			{/snippet}
+		</Form.Control>
+		<Form.FieldErrors />
+	</Form.Field>
 	<Form.Button class="w-full">Sign Up</Form.Button>
 </form>
