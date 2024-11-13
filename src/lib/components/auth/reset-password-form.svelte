@@ -3,17 +3,12 @@
 	import { sendPasswordReset } from "$lib/auth.js";
 	import * as Form from "../ui/form/index.js";
 	import { Input } from "../ui/input/index.js";
-	import {
-		resetPasswordSchema,
-	} from "../../schemas/reset-password.js";
+	import { resetPasswordSchema } from "../../schemas/reset-password.js";
 	import { toast } from "svelte-sonner";
-	import {
-		superForm,defaults
-	} from "sveltekit-superforms";
-	import { zodClient } from "sveltekit-superforms/adapters";
-	import { valibot } from 'sveltekit-superforms/adapters';
+	import { superForm, defaults } from "sveltekit-superforms";
+	import { valibot } from "sveltekit-superforms/adapters";
 
-const data = defaults(valibot(resetPasswordSchema));
+	const data = defaults(valibot(resetPasswordSchema));
 
 	const form = superForm(data, {
 		validators: valibot(resetPasswordSchema),
@@ -44,12 +39,15 @@ const data = defaults(valibot(resetPasswordSchema));
 
 <form method="POST" use:enhance class="space-y-4">
 	<Form.Field {form} name="email">
-		<Form.Control >
-		{#snippet children({ props })}
-        	<Form.Label>Email address</Form.Label>
-        	<Input {...props} bind:value={$formData.email}  placeholder="you@email.com"/>
-      	{/snippet}
-		
+		<Form.Control>
+			{#snippet children({ props })}
+				<Form.Label>Email address</Form.Label>
+				<Input
+					{...props}
+					bind:value={$formData.email}
+					placeholder="you@email.com"
+				/>
+			{/snippet}
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
