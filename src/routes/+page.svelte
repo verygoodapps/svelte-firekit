@@ -1,6 +1,57 @@
 <script lang="ts">
     import FooterMain from "$lib/components/public/footer-main.svelte";
     import NavMain from "$lib/components/public/nav-main.svelte";
+
+    const features: Feature[] = [
+        {
+            title: "Authentication",
+            description: "Complete auth system with built-in components.",
+            emoji: "🔐",
+            url: "/docs/auth/firekit-auth",
+        },
+        {
+            title: "Firestore Integration",
+            description: "Reactive data stores and CRUD operations.",
+            emoji: "🔥",
+            url: "/docs/firestore/firekit-doc",
+        },
+        {
+            title: "Storage Management",
+            description: "File upload and management utilities.",
+            emoji: "📦",
+            url: "/docs/storage/upload-task",
+        },
+        {
+            title: "Route Protection",
+            description: "Protected routes and authorization controls.",
+            emoji: "🛡️",
+            url: "/docs/auth/auth-guard",
+        },
+        {
+            title: "Type Safety",
+            description: "Built with TypeScript for better development.",
+            emoji: "⚡",
+            url: "/docs/configuration",
+        },
+        {
+            title: "SSR Support",
+            description: "Full server-side rendering compatibility.",
+            emoji: "🚀",
+            url: "/docs/advanced/custom-firebase-integration",
+        },
+        {
+            title: "UI Components",
+            description: "Pre-built components for common use cases.",
+            emoji: "🎨",
+            url: "/docs/auth/sign-in-page",
+        },
+        {
+            title: "Real-time Updates",
+            description: "Live data synchronization with Firestore.",
+            emoji: "🔄",
+            url: "/docs/firestore/firekit-collection",
+        },
+    ];
 </script>
 
 <NavMain />
@@ -116,4 +167,51 @@
         <!-- End Buttons -->
     </div>
 </div>
-<!-- End Hero -->
+<section class="max-w-6xl mx-auto py-20">
+    <div class="max-w-3xl mb-10 lg:mb-14">
+        <h2 class=" font-semibold text-2xl md:text-4xl md:leading-tigh">
+            Features
+        </h2>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {#each features as feature}
+            <a
+                href={feature.url}
+                class="group hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-all p-4 border border-gray-200 rounded-lg dark:border-neutral-700"
+            >
+                <div>
+                    <div>
+                        <h3
+                            class="block font-bold text-gray-800 dark:text-white"
+                        >
+                            <span class="mr-2">{feature.emoji}</span>
+                            {feature.title}
+                        </h3>
+                        <p class="text-gray-600 dark:text-neutral-400">
+                            {feature.description}
+                        </p>
+                    </div>
+                    <p
+                        class="mt-3 inline-flex items-center gap-x-1 text-sm font-semibold text-gray-800 dark:text-neutral-200"
+                    >
+                        Learn more
+                        <svg
+                            class="shrink-0 w-4 h-4 transition ease-in-out group-hover:translate-x-1 group-focus:translate-x-1"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path d="m9 18 6-6-6-6" />
+                        </svg>
+                    </p>
+                </div>
+            </a>
+        {/each}
+    </div>
+</section>
