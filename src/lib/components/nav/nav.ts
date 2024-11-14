@@ -1,5 +1,5 @@
 export const nav = {
-    versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
+    versions: ["1.0.1",],
     navMain: [
         {
             title: "Getting Started",
@@ -20,41 +20,67 @@ export const nav = {
                 {
                     title: "Configuration",
                     url: "/docs/configuration",
-                },
+                }
             ],
         },
         {
-            title: "Auth",
+            title: "Firebase Configuration",
             url: "#",
             items: [
                 {
-                    title: "Auth Store",
-                    url: "/docs/stores/auth-store",
+                    title: "Firebase Config",
+                    url: "/docs/firebase/config",
                 },
                 {
-                    title: "User Profile",
-                    url: "/docs/components/user-profile",
+                    title: "Firebase Service",
+                    url: "/docs/firebase/service",
+                }
+            ],
+        },
+        {
+            title: "Authentication",
+            url: "#",
+            items: [
+                {
+                    title: "FirekitUser",
+                    url: "/docs/auth/firekit-user",
                 },
                 {
-                    title: "Sign In",
-                    url: "/docs/components/sign-in",
+                    title: "FirekitAuth",
+                    url: "/docs/auth/firekit-auth",
                 },
                 {
-                    title: "Sign Up",
-                    url: "/docs/components/sign-up",
+                    title: "AuthGuard",
+                    url: "/docs/auth/auth-guard",
                 },
                 {
-                    title: "Sign Out Button",
-                    url: "/docs/components/sign-out-button",
+                    title: "Sign In Page",
+                    url: "/docs/auth/sign-in-page",
                 },
                 {
-                    title: "Auth Guard",
-                    url: "/docs/components/auth-guard",
+                    title: "Sign Up Page",
+                    url: "/docs/auth/sign-up-page",
                 },
                 {
-                    title: "Auth Helpers",
-                    url: "/docs/helpers/auth-helpers",
+                    title: "Reset Password Page",
+                    url: "/docs/auth/reset-password-page",
                 },
+                {
+                    title: "Sign In Form",
+                    url: "/docs/auth/sign-in-form",
+                },
+                {
+                    title: "Sign Up Form",
+                    url: "/docs/auth/sign-up-form",
+                },
+                {
+                    title: "Reset Password Form",
+                    url: "/docs/auth/reset-password-form",
+                },
+                {
+                    title: "User Button",
+                    url: "/docs/auth/user-button",
+                }
             ],
         },
         {
@@ -62,21 +88,29 @@ export const nav = {
             url: "#",
             items: [
                 {
-                    title: "Doc Store",
-                    url: "/docs/stores/doc-store",
+                    title: "FirekitDoc",
+                    url: "/docs/firestore/firekit-doc",
                 },
                 {
-                    title: "Collection Store",
-                    url: "/docs/stores/collection-store",
+                    title: "FirekitAwaitableDoc",
+                    url: "/docs/firestore/awaitable-doc",
                 },
                 {
-                    title: "Awaitable Doc Store",
-                    url: "/docs/stores/awaitable-doc-store",
+                    title: "FirekitCollection",
+                    url: "/docs/firestore/firekit-collection",
                 },
                 {
-                    title: "Firestore Helpers",
-                    url: "/docs/helpers/firestore-helpers",
+                    title: "Document Mutations",
+                    url: "/docs/firestore/document-mutations",
                 },
+                {
+                    title: "Collection Component",
+                    url: "/docs/firestore/collection-component",
+                },
+                {
+                    title: "Doc Component",
+                    url: "/docs/firestore/doc-component",
+                }
             ],
         },
         {
@@ -84,13 +118,21 @@ export const nav = {
             url: "#",
             items: [
                 {
-                    title: "Upload Components",
-                    url: "/docs/components/upload",
+                    title: "Download URL",
+                    url: "/docs/storage/download-url",
                 },
                 {
-                    title: "Storage Management",
-                    url: "/docs/advanced/storage-management",
+                    title: "Storage List",
+                    url: "/docs/storage/storage-list",
                 },
+                {
+                    title: "Upload Task",
+                    url: "/docs/storage/upload-task",
+                },
+                {
+                    title: "Upload Component",
+                    url: "/docs/storage/upload-component",
+                }
             ],
         },
         {
@@ -108,7 +150,7 @@ export const nav = {
                 {
                     title: "Performance Optimization",
                     url: "/docs/advanced/performance-optimization",
-                },
+                }
             ],
         },
     ],

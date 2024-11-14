@@ -1,4 +1,4 @@
-<script lang="ts">
+<!-- <script lang="ts">
     import SignIn from "$lib/auth/sign-in.svelte";
     import UserButton from "$lib/components/auth/user-button.svelte";
     import Collection from "$lib/components/firestore/collection.svelte";
@@ -41,4 +41,4 @@
     {/snippet}
 </Collection>
 
-<Upload path="uploads" />
+<Upload path="uploads" /> -->
