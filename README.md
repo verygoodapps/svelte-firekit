@@ -1,58 +1,106 @@
-# create-svelte
+# Firekit
 
-Everything you need to build a Svelte library, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Firekit is a powerful Firebase toolkit for SvelteKit applications, providing a comprehensive set of utilities, stores, and components for Firebase integration.
 
-Read more about creating a library [in the docs](https://svelte.dev/docs/kit/packaging).
+## Features
 
-## Creating a project
+- 🔥 **Firebase Integration** - Seamless Firebase setup and configuration
+- 🔐 **Authentication** - Complete auth system with built-in components
+- 📚 **Firestore** - Reactive data stores and CRUD operations
+- 📦 **Storage** - File upload and management utilities
+- 🛡️ **Route Guards** - Protected routes and authorization
+- ⚡ **SSR Compatible** - Full server-side rendering support
+- 🎯 **Type Safe** - Built with TypeScript for better development experience
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Quick Start
 
 ```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+# Install with your package manager of choice
+npm install @firekit/sveltekit
+pnpm install @firekit/sveltekit
+yarn add @firekit/sveltekit
 ```
 
-Everything inside `src/lib` is part of your library, everything inside `src/routes` can be used as a showcase or preview app.
+## Basic Usage
 
-## Building
+```typescript
+// Configure Firebase
+import { firebaseConfig } from '@firekit/sveltekit';
+firebaseConfig.init({
+    apiKey: 'your-api-key',
+    // ... other firebase config
+});
 
-To build your library:
+// Use Authentication
+import { firekitAuth } from '@firekit/sveltekit';
+await firekitAuth.signInWithEmail(email, password);
 
-```bash
-npm run package
+// Access User State
+import { firekitUser } from '@firekit/sveltekit';
+isLoggedIn = $derived(firekitUser.isLoggedIn);
+
+// Protect Routes
+import { firekitAuthGuard } from '@firekit/sveltekit';
+await firekitAuthGuard.requireAuth();
+
+// Use Firestore
+import { firekitDoc, firekitCollection } from '@firekit/sveltekit';
+const document = firekitDoc<UserData>('users/123');
+const collection = firekitCollection<PostData>('posts');
+
+// Handle File Uploads
+import { firekitUploadTask } from '@firekit/sveltekit';
+const uploadTask = firekitUploadTask('path/to/file', file);
 ```
 
-To create a production version of your showcase app:
+## Available Services
 
-```bash
-npm run build
-```
+### Firebase Configuration
+- `firebaseConfig` - Firebase app configuration
+- `firebaseService` - Core Firebase service initialization
 
-You can preview the production build with `npm run preview`.
+### Authentication
+- `firekitUser` - User state management
+- `firekitAuth` - Authentication methods
+- `firekitAuthGuard` - Route protection
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+### Firestore
+- `firekitDoc` - Real-time document subscription
+- `firekitAwaitableDoc` - Promise-based document operations
+- `firekitCollection` - Real-time collection subscription
+- `firekitDocMutations` - Document CRUD operations
 
-## Publishing
+### Storage
+- `firekitDownloadUrl` - File URL management
+- `firekitStorageList` - Storage browsing
+- `firekitUploadTask` - File upload handling
 
-Go into the `package.json` and give your package the desired name through the `"name"` option. Also consider adding a `"license"` field and point it to a `LICENSE` file which you can create from a template (one popular option is the [MIT license](https://opensource.org/license/mit/)).
+## Built-in Components
 
-To publish your library to [npm](https://www.npmjs.com):
+### Authentication
+- `SignInPage` - Complete sign-in page
+- `SignUpPage` - User registration page
+- `ResetPasswordPage` - Password reset flow
+- `SignInForm` - Reusable sign-in form
+- `SignUpForm` - Reusable registration form
+- `ResetPasswordForm` - Password reset form
+- `UserButton` - User profile button
 
-```bash
-npm publish
-```
+### Firestore
+- `Collection` - Collection data display
+- `Doc` - Document data display
+
+### Storage
+- `Upload` - File upload component
+
+## Documentation
+
+Visit our [documentation site](https://firekit.codegio.com) for detailed guides and API references.
+
+## Contributing
+
+We welcome contributions! Please see our [contributing guidelines](CONTRIBUTING.md) for details.
+
+## License
+
+MIT License - see [LICENSE](LICENSE) for details.

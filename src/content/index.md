@@ -6,21 +6,59 @@ description: An overview of Svelte Firekit - a comprehensive starter template in
 
 ## Introduction to Svelte Firekit
 
-Welcome to **Svelte Firekit** – your ultimate starter template for building micro SaaS applications with ease. Leveraging the power of **SvelteKit** and **Firebase**, this library equips developers with a seamless, scalable solution that incorporates authentication, Firestore database management, and storage capabilities. Svelte Firekit simplifies the integration process, empowering you to focus on crafting unique features for your application.
+Firekit is a powerful Firebase toolkit for SvelteKit applications, providing a comprehensive set of utilities, stores, and components for Firebase integration.
 
-## Key Features
-- **Modular and Extensible**: A well-structured codebase with a clear organization of Auth, Firestore, and Storage modules.
-- **Pre-built Components**: Includes components such as `<UserProfile />`, `<SignIn />`, `<SignOutButton />`, and more.
-- **Comprehensive Stores**: Robust reactive stores for handling authentication states and Firestore documents/collections.
-- **Customizable Helpers**: Utility functions and helpers for efficient development.
-- **Best Practices in Security and Performance**: Built with a focus on optimal security and performance strategies.
+## Features
 
-## Who Is This For?
-Svelte Firekit is designed for developers looking to:
-- Quickly scaffold micro SaaS applications.
-- Integrate Firebase services with minimal configuration.
-- Leverage modern web development practices with SvelteKit.
+- 🔥 **Firebase Integration** - Seamless Firebase setup and configuration
+- 🔐 **Authentication** - Complete auth system with built-in components
+- 📚 **Firestore** - Reactive data stores and CRUD operations
+- 📦 **Storage** - File upload and management utilities
+- 🛡️ **Route Guards** - Protected routes and authorization
+- ⚡ **SSR Compatible** - Full server-side rendering support
+- 🎯 **Type Safe** - Built with TypeScript for better development experience
 
-## Get Started
-Navigate through the documentation to set up your environment, explore the core components, and start building powerful applications effortlessly.
+## Getting Started
+- [Installation](/docs/installation)
+- [Project Structure](/docs/project-structure)
+- [Quick Start](/docs/quick-start)
+- [Configuration](/docs/configuration)
 
+## Firebase Configuration
+- [Firebase Config](/docs/firebase/config)
+- [Firebase Service](/docs/firebase/service)
+
+## Authentication
+- [FirekitUser](/docs/auth/firekit-user)
+- [FirekitAuth](/docs/auth/firekit-auth)
+- [AuthGuard](/docs/auth/auth-guard)
+
+### Authentication Components
+- [Sign In Page](/docs/auth/sign-in-page)
+- [Sign Up Page](/docs/auth/sign-up-page)
+- [Reset Password Page](/docs/auth/reset-password-page)
+- [Sign In Form](/docs/auth/sign-in-form)
+- [Sign Up Form](/docs/auth/sign-up-form)
+- [Reset Password Form](/docs/auth/reset-password-form)
+- [User Button](/docs/auth/user-button)
+
+## Firestore
+- [FirekitDoc](/docs/firestore/firekit-doc)
+- [FirekitAwaitableDoc](/docs/firestore/awaitable-doc)
+- [FirekitCollection](/docs/firestore/firekit-collection)
+- [Document Mutations](/docs/firestore/document-mutations)
+
+### Firestore Components
+- [Collection Component](/docs/firestore/collection-component)
+- [Doc Component](/docs/firestore/doc-component)
+
+## Storage
+- [Download URL](/docs/storage/download-url)
+- [Storage List](/docs/storage/storage-list)
+- [Upload Task](/docs/storage/upload-task)
+- [Upload Component](/docs/storage/upload-component)
+
+
+
+### Version
+Current Version: 0.0.3
