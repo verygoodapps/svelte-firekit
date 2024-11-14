@@ -3,7 +3,7 @@
     import * as Avatar from "$lib/components/ui/avatar/index.js";
     import { getInitials } from "$lib/utils.js";
     import type { NavItem } from "$lib/types/nav.js";
-    let { nav }: { nav: NavItem[] } = $props();
+    let { nav }: { nav?: NavItem[] } = $props();
     import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
     import Button from "$lib/components/ui/button/button.svelte";
     import { firekitUser } from "$lib/firebase/auth/user.svelte.js";
@@ -55,13 +55,15 @@
                 <DropdownMenu.Item onclick={() => (isOpen = true)}>
                     Profile
                 </DropdownMenu.Item>
-                {#each nav as { href, label }}
-                    <DropdownMenu.Item>
-                        <a {href}>
-                            {label}
-                        </a>
-                    </DropdownMenu.Item>
-                {/each}
+                {#if nav}
+                    {#each nav as { href, label }}
+                        <DropdownMenu.Item>
+                            <a {href}>
+                                {label}
+                            </a>
+                        </DropdownMenu.Item>
+                    {/each}
+                {/if}
 
                 <DropdownMenu.Separator />
                 <DropdownMenu.Item onclick={handleLogout}>

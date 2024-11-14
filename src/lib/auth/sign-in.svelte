@@ -3,7 +3,7 @@
     import SignInForm from "$lib/components/auth/sign-in-form.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
     import * as Card from "$lib/components/ui/card/index.js";
-    let { title = "Sign in" }: { title: string } = $props();
+    let { title = "Sign in" }: { title?: string } = $props();
 </script>
 
 <Card.Root class="sm:w-[448px]">
