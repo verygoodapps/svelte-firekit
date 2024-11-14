@@ -1,7 +1,21 @@
 <script lang="ts">
-	import { signInWithGoogle } from "$lib/auth.js";
+	import { firekitAuth } from "$lib/firebase/auth/auth.js";
+	import { toast } from "svelte-sonner";
+
 	import Button from "../ui/button/button.svelte";
 	let { label = "Sign in" }: { label: string } = $props();
+
+	async function signInWithGoogle() {
+		try {
+			await firekitAuth.signInWithGoogle();
+		} catch (error) {
+			if (error instanceof Error) {
+				toast.error(error.message);
+			} else {
+				toast.error("An error occurred");
+			}
+		}
+	}
 </script>
 
 <Button onclick={signInWithGoogle} class="w-full gap-2" variant="outline">

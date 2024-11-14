@@ -11,7 +11,7 @@
 	<AppSidebar />
 	<Sidebar.Inset>
 		<header
-			class="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
+			class="flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 border-border/40 bg-background/95 supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b backdrop-blur"
 		>
 			<div class="flex items-center gap-2 px-4">
 				<Sidebar.Trigger class="-ml-1" />
@@ -22,7 +22,7 @@
 				<DarkModeToggle />
 			</div>
 		</header>
-		<div class="flex flex-1 flex-col gap-4 p-4">
+		<div class="flex flex-1 flex-col gap-4 p-8 max-w-3xl">
 			{@render children()}
 		</div>
 	</Sidebar.Inset>

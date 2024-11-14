@@ -1,29 +1,26 @@
 ---
-slug: Introduction
-title: Welcome to Prebits Svelte
-description: Prebits Svelte is a collection of pre-styled, reusable components that integrates Bits UI and Shadcn-Svelte components, incorporating preline styling for consistency and efficiency in Svelte projects.
+slug: introduction
+title: Welcome to Svelte Firekit
+description: An overview of Svelte Firekit - a comprehensive starter template integrating SvelteKit and Firebase for building robust micro SaaS applications.
 ---
 
+## Introduction to Svelte Firekit
 
+Welcome to **Svelte Firekit** – your ultimate starter template for building micro SaaS applications with ease. Leveraging the power of **SvelteKit** and **Firebase**, this library equips developers with a seamless, scalable solution that incorporates authentication, Firestore database management, and storage capabilities. Svelte Firekit simplifies the integration process, empowering you to focus on crafting unique features for your application.
 
-## Introduction
+## Key Features
+- **Modular and Extensible**: A well-structured codebase with a clear organization of Auth, Firestore, and Storage modules.
+- **Pre-built Components**: Includes components such as `<UserProfile />`, `<SignIn />`, `<SignOutButton />`, and more.
+- **Comprehensive Stores**: Robust reactive stores for handling authentication states and Firestore documents/collections.
+- **Customizable Helpers**: Utility functions and helpers for efficient development.
+- **Best Practices in Security and Performance**: Built with a focus on optimal security and performance strategies.
 
-Prebits Svelte is an open-source component library for Svelte, designed to enhance the development experience by providing a collection of pre-styled, reusable components. This library leverages the power of Bits UI and Shadcn-Svelte components, while incorporating preline styling to ensure consistency and efficiency in your Svelte projects.
+## Who Is This For?
+Svelte Firekit is designed for developers looking to:
+- Quickly scaffold micro SaaS applications.
+- Integrate Firebase services with minimal configuration.
+- Leverage modern web development practices with SvelteKit.
 
-## Features
+## Get Started
+Navigate through the documentation to set up your environment, explore the core components, and start building powerful applications effortlessly.
 
-- **Bits UI Integration:** Utilizes components from the Bits UI library to offer a wide range of UI elements for your Svelte applications.
-- **Shadcn-Svelte Components:** Incorporates reusable components from Shadcn-Svelte, enhancing the visual appeal and functionality of your Svelte projects.
-- **Preline Styling:** Applies preline styling to the components, ensuring consistent design patterns and aesthetics across your applications.
-- **Ease of Use:** Designed with simplicity and ease of integration in mind, making it effortless to incorporate these components into your Svelte projects.
-- **Open-Source:** Built as an open-source project, allowing for community contributions, feedback, and improvements to further enhance the library's capabilities.
-
-## Installation
-
-To install `prebits-svelte`, you can use npm or yarn:
-
-```bash
-npm install prebits-svelte
-# or
-yarn add prebits-svelte
-```

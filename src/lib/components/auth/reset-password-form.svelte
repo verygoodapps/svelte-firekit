@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-	import { sendPasswordReset } from "$lib/auth.js";
+	import { firekitAuth } from "$lib/firebase/auth/auth.js";
+
 	import * as Form from "../ui/form/index.js";
 	import { Input } from "../ui/input/index.js";
 	import { resetPasswordSchema } from "../../schemas/reset-password.js";
@@ -21,7 +22,7 @@
 			try {
 				const { data } = form;
 				const { email } = data;
-				await sendPasswordReset(email);
+				await firekitAuth.sendPasswordReset(email);
 				toast.success("Password reset email sent");
 				goto("/sign-in");
 			} catch (error) {

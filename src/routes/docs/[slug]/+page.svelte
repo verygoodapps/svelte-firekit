@@ -4,6 +4,7 @@
 </script>
 
 {#if data}
+    <p>{data.metadata.slug}</p>
     <article>
         <h1>{data.title}</h1>
     </article>

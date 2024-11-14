@@ -2,7 +2,7 @@
     import SignInWithGoogle from "$lib/components/auth/google-sign-in.svelte";
     import SignInForm from "$lib/components/auth/sign-in-form.svelte";
     import Button from "$lib/components/ui/button/button.svelte";
-    import * as Card from "$lib/components/ui/card";
+    import * as Card from "$lib/components/ui/card/index.js";
     let { title = "Sign in" }: { title: string } = $props();
 </script>
 
