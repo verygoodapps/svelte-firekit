@@ -3,6 +3,7 @@
     import UserButton from "$lib/components/auth/user-button.svelte";
     import Collection from "$lib/components/firestore/collection.svelte";
     import Doc from "$lib/components/firestore/doc.svelte";
+    import Upload from "$lib/components/storage/upload.svelte";
     import { firekitCollection } from "$lib/firebase/firestore/collection.svelte.js";
     import { firekitDoc } from "$lib/firebase/firestore/doc.svelte.js";
     interface Post {
@@ -39,3 +40,5 @@
         {/each}
     {/snippet}
 </Collection>
+
+<Upload path="uploads" />
