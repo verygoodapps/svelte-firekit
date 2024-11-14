@@ -2,6 +2,11 @@
 
 Firekit is a powerful Firebase toolkit for SvelteKit applications, providing a comprehensive set of utilities, stores, and components for Firebase integration.
 
+<h2>🚧 Under Development 🚧</h2>
+
+<p>
+Please note that this library is still under development. Although it's functional and can be used, some features might be incomplete or subject to changes.
+</p>
 ## Features
 
 - 🔥 **Firebase Integration** - Seamless Firebase setup and configuration
