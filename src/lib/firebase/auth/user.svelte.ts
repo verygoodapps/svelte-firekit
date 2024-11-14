@@ -1,5 +1,6 @@
 import { firebaseService } from '$lib/firebase/firebase.js';
-import { onAuthStateChanged, type User } from "firebase/auth";
+import { onAuthStateChanged, updateCurrentUser, type User } from "firebase/auth";
+import type { DocumentData } from 'firebase/firestore';
 
 
 export class FirekitUser {
@@ -25,6 +26,8 @@ export class FirekitUser {
     get user(): User | null | undefined {
         return this._user;
     }
+
+
 
 }
 
