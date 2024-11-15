@@ -60,21 +60,7 @@ During initialization, select the following options:
 Install all the necessary shadcn-svelte components:
 
 ```bash
-npx shadcn-svelte@next add alert-dialog
-npx shadcn-svelte@next add avatar
-npx shadcn-svelte@next add breadcrumb
-npx shadcn-svelte@next add button
-npx shadcn-svelte@next add card
-npx shadcn-svelte@next add checkbox
-npx shadcn-svelte@next add dropdown-menu
-npx shadcn-svelte@next add form
-npx shadcn-svelte@next add input
-npx shadcn-svelte@next add label
-npx shadcn-svelte@next add separator
-npx shadcn-svelte@next add sheet
-npx shadcn-svelte@next add skeleton
-npx shadcn-svelte@next add sonner
-npx shadcn-svelte@next add tooltip
+npx shadcn-svelte@next add alert-dialog avatar breadcrumb button card checkbox dropdown-menu form input label separator sheet skeleton sonner tooltip
 ```
 
 
