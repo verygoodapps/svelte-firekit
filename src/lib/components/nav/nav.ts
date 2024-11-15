@@ -29,11 +29,11 @@ export const nav = {
             items: [
                 {
                     title: "Firebase Config",
-                    url: "/docs/firebase/config",
+                    url: "/docs/config",
                 },
                 {
                     title: "Firebase Service",
-                    url: "/docs/firebase/service",
+                    url: "/docs/service",
                 }
             ],
         },
@@ -43,43 +43,43 @@ export const nav = {
             items: [
                 {
                     title: "FirekitUser",
-                    url: "/docs/auth/firekit-user",
+                    url: "/docs/firekit-user",
                 },
                 {
                     title: "FirekitAuth",
-                    url: "/docs/auth/firekit-auth",
+                    url: "/docs/firekit-auth",
                 },
                 {
                     title: "AuthGuard",
-                    url: "/docs/auth/auth-guard",
+                    url: "/docs/auth-guard",
                 },
                 {
                     title: "Sign In Page",
-                    url: "/docs/auth/sign-in-page",
+                    url: "/docs/sign-in-page",
                 },
                 {
                     title: "Sign Up Page",
-                    url: "/docs/auth/sign-up-page",
+                    url: "/docs/sign-up-page",
                 },
                 {
                     title: "Reset Password Page",
-                    url: "/docs/auth/reset-password-page",
+                    url: "/docs/reset-password-page",
                 },
                 {
                     title: "Sign In Form",
-                    url: "/docs/auth/sign-in-form",
+                    url: "/docs/sign-in-form",
                 },
                 {
                     title: "Sign Up Form",
-                    url: "/docs/auth/sign-up-form",
+                    url: "/docs/sign-up-form",
                 },
                 {
                     title: "Reset Password Form",
-                    url: "/docs/auth/reset-password-form",
+                    url: "/docs/reset-password-form",
                 },
                 {
                     title: "User Button",
-                    url: "/docs/auth/user-button",
+                    url: "/docs/user-button",
                 }
             ],
         },
