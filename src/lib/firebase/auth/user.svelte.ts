@@ -25,7 +25,7 @@ export class FirekitUser {
     private _user: User | null | undefined = $state();
     private _userData: UserData | null = $state(null);
     private _claims: UserClaims = $state({});
-
+    private _initialized = false;
     readonly isLoggedIn = $derived(Boolean(this._user));
     readonly uid = $derived(this._user?.uid);
     readonly email = $derived(this._user?.email);
@@ -36,6 +36,13 @@ export class FirekitUser {
     readonly data = $derived(this._userData);
 
     constructor() {
+
+    }
+
+    private initialize() {
+        if (this._initialized) return;
+        this._initialized = true;
+
         onAuthStateChanged(firebaseService.getAuthInstance(), async (user) => {
             this._user = user;
             if (user) {
@@ -53,6 +60,7 @@ export class FirekitUser {
     static getInstance(): FirekitUser {
         if (!FirekitUser.instance) {
             FirekitUser.instance = new FirekitUser();
+            FirekitUser.instance.initialize();
         }
         return FirekitUser.instance;
     }
