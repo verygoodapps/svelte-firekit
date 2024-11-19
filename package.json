@@ -72,7 +72,9 @@
 		"vite": "^5.0.11"
 	},
 	"dependencies": {
+		"@types/intl-tel-input": "^18.1.4",
 		"firebase": "^11.0.1",
+		"intl-tel-input": "^24.7.0",
 		"lucide": "^0.454.0",
 		"mdsvex": "^0.12.3"
 	}
