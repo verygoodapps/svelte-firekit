@@ -70,6 +70,7 @@ export class FirekitAuthGuard {
         try {
             this._loading = true;
             this._error = null;
+            await firekitUser.waitForInit();
 
             const isAuthenticated = firekitUser.isLoggedIn;
 

@@ -21,9 +21,9 @@
     <DropdownMenu.Root>
         <DropdownMenu.Trigger>
             <Avatar.Root>
-                <Avatar.Image src={firekitUser.photoURL} alt="Avatar" />
+                <Avatar.Image src={firekitUser.data?.photoURL} alt="Avatar" />
                 <Avatar.Fallback>
-                    {getInitials(firekitUser.displayName)}
+                    {getInitials(firekitUser.data?.displayName)}
                 </Avatar.Fallback>
             </Avatar.Root>
         </DropdownMenu.Trigger>
@@ -33,21 +33,21 @@
                     <div class="flex items-center gap-3">
                         <Avatar.Root>
                             <Avatar.Image
-                                src={firekitUser.photoURL}
+                                src={firekitUser.data?.photoURL}
                                 alt="Avatar"
                             />
                             <Avatar.Fallback>
-                                {getInitials(firekitUser.displayName)}
+                                {getInitials(firekitUser.data?.displayName)}
                             </Avatar.Fallback>
                         </Avatar.Root>
                         <div class="grow">
                             <span
                                 class="block font-medium text-sm text-gray-800 dark:text-neutral-200"
                             >
-                                {firekitUser.displayName}
+                                {firekitUser.data?.displayName}
                             </span>
                             <p class="text-xs text-foreground-500">
-                                {firekitUser.email}
+                                {firekitUser.data?.email}
                             </p>
                         </div>
                     </div>

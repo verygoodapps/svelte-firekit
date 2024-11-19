@@ -15,7 +15,7 @@
       console.log(uploadTask?.downloadURL);
       //   firekitUser.updateProfile({ photoURL: uploadTask?.downloadURL });
       firekitUser.updateUserData({ photoURL: uploadTask?.downloadURL });
-      firekitUser.updateProfile({
+      firekitUser.updateProfileInfo({
         displayName: firekitUser.displayName as string,
         photoURL: uploadTask?.downloadURL,
       });
@@ -53,13 +53,12 @@
 
     <div class="sm:col-span-8 xl:col-span-9">
       <div class="flex flex-wrap justify-around items-center gap-3 sm:gap-5">
-        <small>{firekitUser?.photoURL}</small>
         <div class="flex gap-2 items-center">
           <button onclick={() => inputfile.click()}>
             <Avatar.Root class="size-[70px]">
-              <Avatar.Image src={firekitUser.photoURL} alt="Avatar" />
+              <Avatar.Image src={firekitUser.data?.photoURL} alt="Avatar" />
               <Avatar.Fallback>
-                {getInitials(firekitUser.displayName)}
+                {getInitials(firekitUser.data?.displayName)}
               </Avatar.Fallback>
             </Avatar.Root>
             <!-- <Avatar.Root class="size-[70px]">
