@@ -3,6 +3,7 @@ slug: firekit-auth-docs
 title: Firebase Authentication Service for Svelte Firekit
 description: Complete guide to implementing Firebase authentication flows, user management, and data synchronization in Svelte applications using the FirekitAuth service
 ---
+
 # Firebase Authentication Service for Svelte Firekit
 
 ## Overview
