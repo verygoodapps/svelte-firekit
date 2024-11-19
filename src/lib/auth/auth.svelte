@@ -61,6 +61,5 @@
         {:else if currentForm === "forgot-password"}
             <ResetPasswordForm />
         {/if}
-        <SignInForm />
     </Card.Content>
 </Card.Root>
