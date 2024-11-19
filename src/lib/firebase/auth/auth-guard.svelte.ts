@@ -70,8 +70,9 @@ export class FirekitAuthGuard {
         try {
             this._loading = true;
             this._error = null;
+            await firekitUser.waitForInit();
 
-            const isAuthenticated = $derived(firekitUser.isLoggedIn);
+            const isAuthenticated = firekitUser.isLoggedIn;
 
             if (authRequired && !isAuthenticated) {
                 await this.handleRedirect(redirectTo, {

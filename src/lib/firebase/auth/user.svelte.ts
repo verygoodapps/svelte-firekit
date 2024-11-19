@@ -1,3 +1,4 @@
+import { browser } from '$app/environment';
 import { firebaseService } from '$lib/firebase/firebase.js';
 import { onAuthStateChanged, updateCurrentUser, updateEmail, updatePassword, type User } from "firebase/auth";
 import { doc, getDoc, setDoc, updateDoc, type DocumentData } from 'firebase/firestore';
@@ -25,7 +26,7 @@ export class FirekitUser {
     private _user: User | null | undefined = $state();
     private _userData: UserData | null = $state(null);
     private _claims: UserClaims = $state({});
-    private _initialized = false;
+    private _initialized = $state(false);
     readonly isLoggedIn = $derived(Boolean(this._user));
     readonly uid = $derived(this._user?.uid);
     readonly email = $derived(this._user?.email);
@@ -34,33 +35,41 @@ export class FirekitUser {
     readonly emailVerified = $derived(this._user?.emailVerified);
     readonly claims = $derived(this._claims);
     readonly data = $derived(this._userData);
+    private _initPromise: Promise<void> | null = null;
 
     constructor() {
-
+        if (browser) {  // Add this check
+            this.initialize();
+        }
     }
 
-    private initialize() {
+    private async initialize(): Promise<void> {
         if (this._initialized) return;
-        this._initialized = true;
-
-        onAuthStateChanged(firebaseService.getAuthInstance(), async (user) => {
-            this._user = user;
-            if (user) {
-                await Promise.all([
-                    this.loadUserData(),
-                    this.loadUserClaims()
-                ]);
-            } else {
-                this._userData = null;
-                this._claims = {};
-            }
+        return new Promise((resolve) => {
+            onAuthStateChanged(firebaseService.getAuthInstance(), async (user) => {
+                this._user = user;
+                if (user) {
+                    await Promise.all([
+                        this.loadUserData(),
+                        this.loadUserClaims()
+                    ]);
+                } else {
+                    this._userData = null;
+                    this._claims = {};
+                }
+                this._initialized = true;
+                resolve();
+            });
         });
     }
 
+    async waitForInit(): Promise<void> {
+        if (this._initialized) return;
+        return this._initPromise || Promise.resolve();
+    }
     static getInstance(): FirekitUser {
         if (!FirekitUser.instance) {
             FirekitUser.instance = new FirekitUser();
-            FirekitUser.instance.initialize();
         }
         return FirekitUser.instance;
     }
@@ -157,4 +166,4 @@ export class FirekitUser {
 
 }
 
-export const firekitUser = new FirekitUser();
+export const firekitUser = FirekitUser.getInstance();
