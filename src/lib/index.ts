@@ -27,7 +27,7 @@ export { default as ResetPassWordForm } from './components/auth/reset-password-f
 export { default as SignInForm } from './components/auth/sign-in-form.svelte';
 export { default as SignUpForm } from './components/auth/sign-up-form.svelte';
 
-export { default as UserButton } from './components/auth/user-button.svelte';
+export { default as UserButton } from './components/auth/user-button/user-button.svelte';
 
 // firestore components
 export { default as Collection } from './components/firestore/collection.svelte'

@@ -105,5 +105,3 @@ export const load = async () => {
 - Type-safe configuration
 
 ## License
-
-MIT License

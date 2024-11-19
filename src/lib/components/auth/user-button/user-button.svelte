@@ -9,6 +9,7 @@
     import { firekitUser } from "$lib/firebase/auth/user.svelte.js";
     import { firekitAuth } from "$lib/firebase/auth/auth.js";
     import { LogOut } from "lucide-svelte";
+    import SettingsDialog from "./settings-dialog.svelte";
     let isOpen = $state(false);
 
     async function handleLogout() {
@@ -53,7 +54,9 @@
                 </DropdownMenu.GroupHeading>
                 <DropdownMenu.Separator />
                 <DropdownMenu.Item onclick={() => (isOpen = true)}>
-                    Profile
+                    {#snippet child({ props })}
+                        <SettingsDialog child({ props }) />
+                    {/snippet}
                 </DropdownMenu.Item>
                 {#if nav}
                     {#each nav as { href, label }}
