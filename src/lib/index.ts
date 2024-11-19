@@ -22,10 +22,13 @@ export { firekitUploadTask } from './firebase/storage/upload-task.svelte.js';
 export { default as SignInPage } from './auth/sign-in.svelte';
 export { default as SignUpPage } from './auth/sign-up.svelte';
 export { default as ResetPassWordPage } from './auth/reset-password.svelte';
+export { default as AuthPage } from './auth/auth.svelte';
+
 
 export { default as ResetPassWordForm } from './components/auth/reset-password-form.svelte';
 export { default as SignInForm } from './components/auth/sign-in-form.svelte';
 export { default as SignUpForm } from './components/auth/sign-up-form.svelte';
+
 
 export { default as UserButton } from './components/auth/user-button/user-button.svelte';
 
