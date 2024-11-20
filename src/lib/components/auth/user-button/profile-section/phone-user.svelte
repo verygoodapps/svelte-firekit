@@ -2,67 +2,66 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import { firekitUser } from "$lib/firebase/auth/user.svelte.js";
   import Input from "$lib/components/ui/input/input.svelte";
-  import Label from "$lib/components/ui/label/label.svelte";
   import { toast } from "svelte-sonner";
   import intlTelInput from "intl-tel-input";
   import { onMount } from "svelte";
 
-  let phoneNumber = $state("");
-  let haserror = $state(false);
+  let phoneNumber = ""; // Inicializa como una cadena vacía
+  let haserror = false;
   let it: any = null;
   let _phone: any = { valid: false, value: "", error: "" };
 
   onMount(() => {
-    const input: any = document.querySelector(`#phonenumberuser`);
-    console.log(input);
+    const input: HTMLInputElement | null = document.querySelector("#phonenumberuser");
+    if (input) {
+      it = intlTelInput(input, {
+        utilsScript:
+          "https://cdn.jsdelivr.net/npm/intl-tel-input@24.7.0/build/js/utils.js",
+        separateDialCode: true,
+      });
 
-    //   it = intlTelInput(input, {
-    //     utilsScript: "./intl-tel-input/build/js/utils.js",
-    //     separateDialCode: true,
-    //   });
-    it = intlTelInput(input, {
-      utilsScript:
-        "https://cdn.jsdelivr.net/npm/intl-tel-input@24.7.0/build/js/utils.js",
-      separateDialCode: true,
-    });
-    console.log(it.getNumber());
+      // Si ya existe un número de teléfono, configúralo visualmente en el input
+      if (firekitUser.data?.phoneNumber) {
+        it.setNumber(firekitUser.data.phoneNumber);
+        phoneNumber = firekitUser.data.phoneNumber;
+      }
+    }
   });
 
   $effect(() => {
-    phoneNumber = firekitUser.user?.phoneNumber as string;
+    if (firekitUser.data?.phoneNumber) {
+      _phone.value = firekitUser.data.phoneNumber;
+      phoneNumber = firekitUser.data.phoneNumber;
+
+      // Si intlTelInput está inicializado, actualiza el input con el valor
+      if (it) {
+        it.setNumber(firekitUser.data.phoneNumber);
+      }
+    }
   });
 
-  function handleChangePhoneNumber() {
-   if (it) {
+  async function handleChangePhoneNumber() {
+    if (it) {
       _phone.value = it.getNumber();
       _phone.error = it.getValidationError();
       _phone.valid = it.isValidNumber();
     }
-    // console.log(it .isValidNumber())
-    if (it.isValidNumber()) {
-      it.setNumber(phoneNumber);
-    }
-    console.log(phoneNumber);
-    haserror = false;
-    console.log(firekitUser.user?.phoneNumber);
-    console.log(_phone.value);
-    if (phoneNumber === firekitUser.user?.phoneNumber) {
-      toast.error("The email is the same as your current email.");
+
+    if (!_phone.valid) {
+      toast.error("Phone number invalid.");
       haserror = true;
       return;
     }
-  }
 
-  function changePhone() {
-    // if (it) {
-    //   _phone.value = it.getNumber();
-    //   _phone.error = it.getValidationError();
-    //   _phone.valid = it.isValidNumber();
-    // }
-    // // console.log(it .isValidNumber())
-    // if (it.isValidNumber()) {
-    //   it.setNumber(phoneNumber);
-    // }
+    if (_phone.value === firekitUser.data?.phoneNumber) {
+      toast.error("The phone number is the same as your current phone number.");
+      haserror = true;
+      return;
+    }
+
+    await firekitUser.updateUserData({ phoneNumber: _phone.value });
+    toast.success("Phone number updated successfully.");
+    haserror = false;
   }
 </script>
 
@@ -85,15 +84,13 @@
             <div class=" space-y-1 my-2">
               <!-- <Label class={haserror ? "text-red-500" : ""}>Phone number:</Label
               > -->
+              <!-- oninput={changePhone} -->
               <Input
                 id={"phonenumberuser"}
                 bind:value={phoneNumber}
                 name="phone"
                 type="tel"
-                class="input input-bordered input-sm w-full rounded  bg-transparent px-3  text-md {_phone.valid
-                  ? 'border-[#DBDEE2]'
-                  : 'border-red-700'}"
-                oninput={changePhone}
+                class="input input-bordered input-sm w-full rounded  bg-transparent px-3  text-md border-[#DBDEE2]"
                 onbeforeinput={(e) => {
                   if (
                     !/^\d*$/.test(e.data) &&

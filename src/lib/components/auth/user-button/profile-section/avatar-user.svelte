@@ -16,7 +16,7 @@
       //   firekitUser.updateProfile({ photoURL: uploadTask?.downloadURL });
       firekitUser.updateUserData({ photoURL: uploadTask?.downloadURL });
       firekitUser.updateProfileInfo({
-        displayName: firekitUser.displayName as string,
+        displayName: firekitUser.data?.displayName as string,
         photoURL: uploadTask?.downloadURL,
       });
     }
@@ -79,10 +79,10 @@
             class="hidden"
           />
           <div class="grid flex-1 text-left text-sm leading-tight">
-            <span class="truncate font-semibold">{firekitUser.displayName}</span
+            <span class="truncate font-semibold">{firekitUser.data?.displayName}</span
             >
             <span class="truncate text-sm text-slate-400"
-              >{firekitUser.email}</span
+              >{firekitUser.data?.email}</span
             >
             {#if progress > 0 && !uploadTask?.completed}
               <div
@@ -93,8 +93,8 @@
                   style="width: {progress}%"
                 ></div>
               </div>
-              <p class="text-sm text-gray-500 mt-1">
-                Progreso: {progress.toFixed(2)}%
+              <p class="text-xs text-gray-500 mt-1">
+                Progress: {progress.toFixed(2)}%
               </p>
             {/if}
           </div>

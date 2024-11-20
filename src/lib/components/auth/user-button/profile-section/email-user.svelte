@@ -4,19 +4,20 @@
   import Input from "$lib/components/ui/input/input.svelte";
   import Label from "$lib/components/ui/label/label.svelte";
   import { toast } from "svelte-sonner";
+  import { firekitAuth } from "$lib/firebase/auth/auth.js";
 
-  let email:string = $state("");
+  let email: string = $state("");
   let haserror = $state(false);
 
   $effect(() => {
-    email = firekitUser.user?.email as string;
+    email = firekitUser.data?.email as string;
   });
 
-  function handleChangeEmail() {
+  async function handleChangeEmail() {
     console.log(email);
     haserror = false;
-    console.log(firekitUser.user?.email);
-    if (email === firekitUser.user?.email) {
+    console.log(firekitUser.data?.email);
+    if (email === firekitUser.data?.email) {
       toast.error("The email is the same as your current email.");
       haserror = true;
       return;
@@ -27,6 +28,13 @@
       haserror = true;
       return;
     }
+
+    firekitUser.updateEmail(email);
+    toast.success("Email updated successfully!");
+    setTimeout(async () => {
+      await firekitAuth.logOut();
+      
+    }, 4500);
   }
 
   function isValidEmail() {
@@ -38,7 +46,11 @@
 <section class="space-y-5 border-t-slate-200 border-t-[2px] pt-4">
   <div class="grid sm:grid-cols-12 gap-y-1.5 sm:gap-y-0 sm:gap-x-5">
     <div class="sm:col-span-4 xl:col-span-3 2xl:col-span-2">
-      <p class="sm:mt-2.5 inline-block text-sm  {haserror ? "text-red-500" : "text-foreground-500"}">
+      <p
+        class="sm:mt-2.5 inline-block text-sm {haserror
+          ? 'text-red-500'
+          : 'text-foreground-500'}"
+      >
         Email address
       </p>
     </div>

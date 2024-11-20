@@ -16,7 +16,7 @@
   };
 
   let open = $state(false);
-  let section = $state("");
+  let section = $state("Profile");
 </script>
 
 <Dialog.Root bind:open>
@@ -41,7 +41,7 @@
                 {#each data.nav as item (item.name)}
                   <Sidebar.MenuItem>
                     <Sidebar.MenuButton
-                      isActive={item.name === "Messages & media"}
+                      isActive={item.name === section}
                       onclick={() => (section = item.name)}
                     >
                       {#snippet child({ props })}

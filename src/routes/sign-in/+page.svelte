@@ -6,3 +6,4 @@
 
 {isLoggedin}
 <SignInPage />
+<h1>OR</h1>

@@ -6,6 +6,7 @@ import {
   updateEmail,
   updatePassword,
   updateProfile,
+  verifyBeforeUpdateEmail,
   type User,
 } from "firebase/auth";
 import {
@@ -15,6 +16,7 @@ import {
   updateDoc,
   type DocumentData,
 } from "firebase/firestore";
+import { toast } from "svelte-sonner";
 
 interface UserClaims {
   [key: string]: any;
@@ -118,9 +120,15 @@ export class FirekitUser {
     return this._user;
   }
 
-  async updateEmail(email: string) {
+  async updateEmail(email: string, redirect?: string = "/sign-in") {
+    let message: string = "";
     if (!this._user) throw new Error("No authenticated user");
-    await updateEmail(this._user, email);
+    try {
+      await updateEmail(this._user, email);
+      await this.updateUserData({ email });
+    } catch (error) {
+      toast.error(message);
+    }
   }
 
   async updatePassword(password: string) {

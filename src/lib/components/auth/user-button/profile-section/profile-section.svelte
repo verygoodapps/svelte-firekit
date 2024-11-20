@@ -9,8 +9,8 @@
 <h2 class=" pb-3 text-lg font-semibold">Profile Details</h2>
 
 <AvatarUser></AvatarUser>
-{#if firekitUser.user?.providerData[0]?.providerId !== "google.com"}
+<!-- {#if firekitUser.user?.providerData[0]?.providerId !== "google.com"} -->
   <EmailUser></EmailUser>
-{/if}
+<!-- {/if} -->
 <PhoneUser></PhoneUser>
 <ConnectUser></ConnectUser>
