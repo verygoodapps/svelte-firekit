@@ -5,8 +5,8 @@ import {
   updateCurrentUser,
   updateEmail,
   updatePassword,
+  updatePhoneNumber,
   updateProfile,
-  verifyBeforeUpdateEmail,
   type User,
 } from "firebase/auth";
 import {
@@ -17,6 +17,7 @@ import {
   type DocumentData,
 } from "firebase/firestore";
 import { toast } from "svelte-sonner";
+import { firekitAuth } from "./auth.js";
 
 interface UserClaims {
   [key: string]: any;
@@ -120,14 +121,22 @@ export class FirekitUser {
     return this._user;
   }
 
-  async updateEmail(email: string, redirect?: string = "/sign-in") {
+  async updateEmailUser(email: string) {
     let message: string = "";
     if (!this._user) throw new Error("No authenticated user");
     try {
       await updateEmail(this._user, email);
       await this.updateUserData({ email });
+
+      toast.success("Email updated successfully!", {
+        description:
+          "Please note that you will be logged out, and you will need to log in again using your new email address.",
+      });
+      setTimeout(async () => {
+        await firekitAuth.logOut();
+      }, 4500);
     } catch (error) {
-      toast.error(message);
+      toast.error(error.message);
     }
   }
 
@@ -150,6 +159,19 @@ export class FirekitUser {
   }
 
   async updateUserData(data: Partial<UserData>) {
+    if (!this._user?.uid) throw new Error("No authenticated user");
+
+    const docRef = doc(firebaseService.getDb(), "users", this._user.uid);
+    const updateData = {
+      ...data,
+      updatedAt: new Date(),
+    };
+
+    await updateDoc(docRef, updateData);
+    await this.loadUserData(); // Reload user data
+  }
+
+  async updatePhoneNumberUser(data: Partial<UserData>) {
     if (!this._user?.uid) throw new Error("No authenticated user");
 
     const docRef = doc(firebaseService.getDb(), "users", this._user.uid);

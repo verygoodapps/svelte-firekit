@@ -4,6 +4,4 @@
     let isLoggedin = $derived(firekitUser.isLoggedIn);
 </script>
 
-{isLoggedin}
 <SignInPage />
-<h1>OR</h1>

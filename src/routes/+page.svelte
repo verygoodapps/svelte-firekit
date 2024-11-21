@@ -1,7 +1,12 @@
 <script lang="ts">
-  import UserButton from "$lib/components/auth/user-button/user-button.svelte";
   import FooterMain from "$lib/components/public/footer-main.svelte";
   import NavMain from "$lib/components/public/nav-main.svelte";
+  import Button from "$lib/components/ui/button/button.svelte";
+  import { onMount } from "svelte";
+
+  onMount(() => {
+    // goto("/dashboard");
+  });
 
   const features: Feature[] = [
     {
@@ -56,8 +61,7 @@
 </script>
 
 <NavMain />
-
-<UserButton></UserButton>
+<Button variant="default" class="bg-blue-400 hover:bg-blue-600 text-white px-2 m-4" href="/sign-in">Sign In</Button>
 <!-- Hero -->
 <div
   class="relative overflow-hidden before:absolute before:top-0 before:start-1/2 before:bg-[url('/polygon-bg-element.svg')] dark:before:bg-[url('/polygon-bg-element-dark.svg')] before:bg-no-repeat before:bg-top before:bg-cover before:size-full before:-z-[1] before:transform before:-translate-x-1/2"

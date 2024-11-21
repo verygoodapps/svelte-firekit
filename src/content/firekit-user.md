@@ -37,7 +37,7 @@ await firekitUser.updateProfile({
 
 #### Update Email
 ```typescript
-await firekitUser.updateEmail('newemail@example.com');
+await firekitUser.updateEmailUser('newemail@example.com');
 ```
 
 #### Update Password

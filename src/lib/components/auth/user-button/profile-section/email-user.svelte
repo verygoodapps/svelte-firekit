@@ -29,12 +29,11 @@
       return;
     }
 
-    firekitUser.updateEmail(email);
-    toast.success("Email updated successfully!");
-    setTimeout(async () => {
-      await firekitAuth.logOut();
-      
-    }, 4500);
+    await firekitUser.updateEmailUser(email);
+    // toast.success("Email updated successfully!");
+    // setTimeout(async () => {
+    //   await firekitAuth.logOut();
+    // }, 4500);
   }
 
   function isValidEmail() {
@@ -56,13 +55,13 @@
     </div>
 
     <div class="sm:col-span-8 xl:col-span-9">
-      <div class="flex flex-wrap justify-around items-center gap-3 sm:gap-5">
-        <div class="flex gap-2 items-center">
-          <div class="flex flex-col gap-2 text-sm leading-tight">
-            <div class=" space-y-1 my-2">
+      <div class="flex flex-wrap  items-center gap-3 sm:gap-5 ">
+        <div class="flex gap-2 items-center w-full  ">
+          <div class="flex flex-col gap-2 text-sm leading-tight  w-full ">
+            <div class=" space-y-1 my-2 w-full ">
               <!-- <Label class={haserror ? "text-red-500" : ""}>Email:</Label> -->
               <Input
-                class="h-[30px] {haserror ? 'border border-red-500' : ''}"
+                class="  {haserror ? 'border border-red-500' : ''}"
                 bind:value={email}
                 placeholder="Introduce email"
               />

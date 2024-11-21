@@ -12,7 +12,8 @@
   let _phone: any = { valid: false, value: "", error: "" };
 
   onMount(() => {
-    const input: HTMLInputElement | null = document.querySelector("#phonenumberuser");
+    const input: HTMLInputElement | null =
+      document.querySelector("#phonenumberuser");
     if (input) {
       it = intlTelInput(input, {
         utilsScript:
@@ -60,6 +61,7 @@
     }
 
     await firekitUser.updateUserData({ phoneNumber: _phone.value });
+    await firekitUser.updateProfileInfo({});
     toast.success("Phone number updated successfully.");
     haserror = false;
   }
@@ -78,10 +80,10 @@
     </div>
 
     <div class="sm:col-span-8 xl:col-span-9">
-      <div class="flex flex-wrap justify-around items-center gap-3 sm:gap-5">
-        <div class="flex gap-2 items-center">
-          <div class="flex flex-col gap-2 text-sm leading-tight">
-            <div class=" space-y-1 my-2">
+      <div class="flex flex-wrap j items-center gap-3 sm:gap-5">
+        <div class="flex gap-2 items-center w-full">
+          <div class="flex flex-col gap-2 text-sm leading-tight w-full">
+            <div id="contentphone" class=" space-y-1 my-2">
               <!-- <Label class={haserror ? "text-red-500" : ""}>Phone number:</Label
               > -->
               <!-- oninput={changePhone} -->
@@ -90,7 +92,7 @@
                 bind:value={phoneNumber}
                 name="phone"
                 type="tel"
-                class="input input-bordered input-sm w-full rounded  bg-transparent px-3  text-md border-[#DBDEE2]"
+                class="input input-bordered w-full rounded  bg-transparent px-3  text-md border-[#DBDEE2]"
                 onbeforeinput={(e) => {
                   if (
                     !/^\d*$/.test(e.data) &&

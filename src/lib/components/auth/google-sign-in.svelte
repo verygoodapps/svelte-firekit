@@ -3,11 +3,13 @@
 	import { toast } from "svelte-sonner";
 
 	import Button from "../ui/button/button.svelte";
+  import { goto } from "$app/navigation";
 	let { label = "Sign in" }: { label: string } = $props();
 
 	async function signInWithGoogle() {
 		try {
 			await firekitAuth.signInWithGoogle();
+			await goto("/dashboard")
 		} catch (error) {
 			if (error instanceof Error) {
 				toast.error(error.message);

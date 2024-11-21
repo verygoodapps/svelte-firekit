@@ -51,15 +51,15 @@ class FirekitAuth {
     private async updateUserInFirestore(user: User): Promise<void> {
         const ref = doc(this.firestore, 'users', user.uid);
         const userData = {
-            uid: user.uid,
-            email: user.email,
-            emailVerified: user.emailVerified,
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-            isAnonymous: user.isAnonymous,
-            providerId: user.providerId,
-            phoneNumber: user.phoneNumber,
-            providerData: user.providerData
+          uid: user.uid,
+          email: user.email,
+          emailVerified: user.emailVerified,
+          displayName: user.displayName,
+          photoURL: user.photoURL,
+          isAnonymous: user.isAnonymous,
+          providerId: user.providerId,
+          // phoneNumber: user.phoneNumber,
+          providerData: user.providerData,
         };
         await setDoc(ref, userData, { merge: true });
     }
