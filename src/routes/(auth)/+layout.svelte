@@ -6,22 +6,18 @@
 
   let { children } = $props();
   let loading = $derived(firekitAuthGuard.loading);
-  //   console.log(loading)
+
   $effect(() => {
+    console.log("------------------------------------------");
     console.log("AUTH");
-    console.log("firekitAuthGuardssss:", loading);
+    console.log("loading:", loading);
     console.log("firekitUser:", firekitUser.isLoggedIn);
     if (!loading || firekitUser.isLoggedIn) {
-      console.log("firekitUser:", firekitUser.isLoggedIn);
+      console.log("REDIRECT TO /DASHBOARD");
       goto("/dashboard");
     }
+    console.log("------------------------------------------");
   });
-  //   onMount(() => {
-  //     setTimeout(() => {
-  //         !firekitAuthGuard.requireAuth("/dashboard");
-
-  //     }, 800);
-  //   });
 </script>
 
 <main class="flex h-[100dvh] flex-col items-center justify-center">

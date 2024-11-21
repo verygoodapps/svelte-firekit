@@ -44,7 +44,7 @@
 
 <section class="space-y-5 border-t-slate-200 border-t-[2px] pt-4">
   <div class="grid sm:grid-cols-12 gap-y-1.5 sm:gap-y-0 sm:gap-x-5">
-    <div class="sm:col-span-4 xl:col-span-3 2xl:col-span-2">
+    <div class="sm:col-span-4 xl:col-span-3">
       <p
         class="sm:mt-2.5 inline-block text-sm {haserror
           ? 'text-red-500'
@@ -57,11 +57,11 @@
     <div class="sm:col-span-8 xl:col-span-9">
       <div class="flex flex-wrap  items-center gap-3 sm:gap-5 ">
         <div class="flex gap-2 items-center w-full  ">
-          <div class="flex flex-col gap-2 text-sm leading-tight  w-full ">
-            <div class=" space-y-1 my-2 w-full ">
+          <div class="flex flex-col gap-2 text-sm leading-tight w-[250px]">
+            <div class=" space-y-1 my-2 w-auto ">
               <!-- <Label class={haserror ? "text-red-500" : ""}>Email:</Label> -->
               <Input
-                class="  {haserror ? 'border border-red-500' : ''}"
+                class=" w-full {haserror ? 'border border-red-500' : ''}"
                 bind:value={email}
                 placeholder="Introduce email"
               />

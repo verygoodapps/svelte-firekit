@@ -14,21 +14,15 @@
   let isInitialized: boolean = $state(false);
 
   $effect(() => {
-      //el loading a veces no cambia si se recarga la pagina
-      // console.log("firekitAuthGuard:", loading);
-      console.log("APP");
-      // if (!firekitUser.isLoggedIn ) {
+    console.log("------------------------------------------");
+    console.log("APP");
+    console.log("loading:", loading);
+    console.log("firekitUser:", firekitUser.isLoggedIn);
     if (!loading || !firekitUser.isLoggedIn) {
-
-        console.log("firekitUser:", firekitUser.isLoggedIn);
-        goto("/sign-in");
-      }
-      // setTimeout(() => {
-      //   if (!firekitUser.isLoggedIn) {
-      //     console.log("firekitUser:", firekitUser.isLoggedIn);
-      //     goto("/sign-in");
-      //   }
-      // }, 100);
+      console.log("REDIRECT TO /SIGN-IN");
+      goto("/sign-in");
+    }
+    console.log("------------------------------------------");
   });
 </script>
 

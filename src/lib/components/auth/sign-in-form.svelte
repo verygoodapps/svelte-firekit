@@ -6,6 +6,20 @@
 	import Button from "../ui/button/button.svelte";
 	import { valibot } from "sveltekit-superforms/adapters";
 
+	let {
+    labelEmail = "Email",
+    labelPassword = "Password",
+    labellLinkEmailForm = "I forgot my password",
+    linkForgetPassword = "/reset-password",
+    labelBtnFormEmail = "Sign",
+  }: {
+    labelEmail: string;
+    labelPassword: string;
+    labellLinkEmailForm: string;
+    linkForgetPassword: string;
+    labelBtnFormEmail: string;
+  } = $props();
+
 	const data = defaults(valibot(signInSchema));
 
 	import * as Form from "../ui/form/index.js";
@@ -35,13 +49,15 @@
 	});
 
 	const { form: formData, enhance } = form;
+
+	
 </script>
 
 <form method="POST" use:enhance class="space-y-2">
 	<Form.Field {form} name="email">
 		<Form.Control>
 			{#snippet children({ props })}
-				<Form.Label>Email</Form.Label>
+				<Form.Label>{labelEmail}</Form.Label>
 				<Input
 					{...props}
 					bind:value={$formData.email}
@@ -55,13 +71,13 @@
 		<Form.Control>
 			{#snippet children({ props })}
 				<div class="flex w-full items-center justify-between">
-					<Form.Label>Password</Form.Label>
+					<Form.Label>{labelPassword}</Form.Label>
 					<Button
 						variant="link"
 						class="text-sm"
-						href="/reset-password "
+						href={linkForgetPassword}
 					>
-						I forgot my password
+						{labellLinkEmailForm}
 					</Button>
 				</div>
 				<Input
@@ -74,5 +90,5 @@
 		</Form.Control>
 		<Form.FieldErrors />
 	</Form.Field>
-	<Form.Button class="w-full">Sign In</Form.Button>
+	<Form.Button class="w-full">{labelBtnFormEmail}</Form.Button>
 </form>

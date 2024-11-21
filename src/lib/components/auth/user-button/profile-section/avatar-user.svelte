@@ -47,7 +47,7 @@
 
 <section class="space-y-5 border-t-slate-200 border-t-[2px] pt-4">
   <div class="grid sm:grid-cols-12 gap-y-1.5 sm:gap-y-0 sm:gap-x-5">
-    <div class="sm:col-span-4 xl:col-span-3 2xl:col-span-2">
+    <div class="sm:col-span-4 xl:col-span-3 ">
       <p class="sm:mt-2.5 inline-block text-sm text-foreground-500">Profile</p>
     </div>
 
