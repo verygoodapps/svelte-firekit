@@ -4,21 +4,21 @@
   import Breadcrumb from "$lib/components/nav/breadcrumb.svelte";
   import { Separator } from "$lib/components/ui/separator/index.js";
   import * as Sidebar from "$lib/components/ui/sidebar/index.js";
-  import { firekitAuthGuard } from "$lib/firebase/auth/auth-guard.svelte.js";
-  import { firekitUser } from "$lib/firebase/auth/user.svelte.js";
+    import { firekitAuthManager } from "$lib/firebase/auth/auth-manager.svelte.js";
+
   import { onMount } from "svelte";
   const { children } = $props();
 
-  let loading = $derived(firekitAuthGuard.loading);
-  // let isInitialized  = $state(firekitUser.waitForInit());
+  let loading = $derived(firekitAuthManager.loading);
   let isInitialized: boolean = $state(false);
 
   $effect(() => {
     console.log("------------------------------------------");
     console.log("APP");
     console.log("loading:", loading);
-    console.log("firekitUser:", firekitUser.isLoggedIn);
-    if (!loading || !firekitUser.isLoggedIn) {
+    console.log("initialized:", firekitAuthManager.initialized);
+    console.log("isLoggedIn:", firekitAuthManager.isLoggedIn);
+    if (firekitAuthManager.initialized && !firekitAuthManager.isLoggedIn) {
       console.log("REDIRECT TO /SIGN-IN");
       goto("/sign-in");
     }
@@ -43,26 +43,3 @@
     </div>
   </Sidebar.Inset>
 </Sidebar.Provider>
-
-<!-- <script>
-  import { goto } from "$app/navigation";
-  import { firekitAuthGuard } from "$lib/firebase/auth/auth-guard.svelte";
-  import { firekitUser } from "$lib/firebase/auth/user.svelte";
-
-  let { children } = $props();
-  let loading = $derived(firekitAuthGuard.loading);
-
-  $effect(()=>{
-    console.log("firekitAuthGuard:", loading)
-    console.log("firekitUser:", firekitUser.isLoggedIn)
-    if(!loading || !firekitUser.isLoggedIn){
-        console.log("firekitUser:", firekitUser.isLoggedIn)
-        goto("/sign-in")
-    }
-})
- 
-</script>
-
-<main class="flex h-full flex-col items-center justify-center">
-  {@render children()}
-</main> -->

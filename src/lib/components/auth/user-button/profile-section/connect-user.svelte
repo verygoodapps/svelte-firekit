@@ -1,6 +1,7 @@
 <script lang="ts">
   import Button from "$lib/components/ui/button/button.svelte";
-  import { firekitUser } from "$lib/firebase/auth/user.svelte.js";
+    import { firekitAuthManager } from "$lib/firebase/auth/auth-manager.svelte.js";
+
   import { Badge } from "$lib/components/ui/badge/index.js";
   import { Plus } from "lucide-svelte";
   import TypeAccount from "../type-account.svelte";
@@ -19,11 +20,11 @@
         <div class="flex flex-col gap-2 text-sm leading-tight items-start">
           <div class="flex gap-2 items-center">
             <TypeAccount
-              account={firekitUser?.user?.providerData[0]?.providerId || "None"}
+              account={firekitAuthManager?.user?.providerData[0]?.providerId || "None"}
             ></TypeAccount>
 
             <span class="truncate text-xs text-slate-600"
-              >{firekitUser.email}</span
+              >{firekitAuthManager.email}</span
             >
 
             <Badge variant="outline">Primary</Badge>

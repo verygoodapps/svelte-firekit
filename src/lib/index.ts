@@ -3,9 +3,9 @@ export { firebaseConfig } from './firebase/config.js'
 export { firebaseService } from './firebase/firebase.js'
 
 // auth services
-export { firekitUser } from './firebase/auth/user.svelte.js'
-export { firekitAuth } from './firebase/auth/auth.js'
-export { firekitAuthGuard } from './firebase/auth/auth-guard.svelte.js'
+// export { firekitUser } from './firebase/auth/user.svelte.js'
+// export { firekitAuthGuard } from './firebase/auth/auth-guard.svelte.js'
+export { firekitAuthManager } from './firebase/auth/auth-manager.svelte.js'
 
 // firestore services
 export { firekitAwaitableDoc } from './firebase/firestore/awaitable-doc.svelte.js'

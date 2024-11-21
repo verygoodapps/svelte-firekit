@@ -1,6 +1,7 @@
 <script lang="ts">
   import Button from "$lib/components/ui/button/button.svelte";
-  import { firekitUser } from "$lib/firebase/auth/user.svelte.js";
+  import { firekitAuthManager } from "$lib/firebase/auth/auth-manager.svelte.js";
+
   import Input from "$lib/components/ui/input/input.svelte";
   import { toast } from "svelte-sonner";
   import intlTelInput from "intl-tel-input";
@@ -22,21 +23,21 @@
       });
 
       // Si ya existe un número de teléfono, configúralo visualmente en el input
-      if (firekitUser.data?.phoneNumber) {
-        it.setNumber(firekitUser.data.phoneNumber);
-        phoneNumber = firekitUser.data.phoneNumber;
+      if (firekitAuthManager.data?.phoneNumber) {
+        it.setNumber(firekitAuthManager.data.phoneNumber);
+        phoneNumber = firekitAuthManager.data.phoneNumber;
       }
     }
   });
 
   $effect(() => {
-    if (firekitUser.data?.phoneNumber) {
-      _phone.value = firekitUser.data.phoneNumber;
-      phoneNumber = firekitUser.data.phoneNumber;
+    if (firekitAuthManager.data?.phoneNumber) {
+      _phone.value = firekitAuthManager.data.phoneNumber;
+      phoneNumber = firekitAuthManager.data.phoneNumber;
 
       // Si intlTelInput está inicializado, actualiza el input con el valor
       if (it) {
-        it.setNumber(firekitUser.data.phoneNumber);
+        it.setNumber(firekitAuthManager.data.phoneNumber);
       }
     }
   });
@@ -54,14 +55,14 @@
       return;
     }
 
-    if (_phone.value === firekitUser.data?.phoneNumber) {
+    if (_phone.value === firekitAuthManager.data?.phoneNumber) {
       toast.error("The phone number is the same as your current phone number.");
       haserror = true;
       return;
     }
 
-    await firekitUser.updateUserData({ phoneNumber: _phone.value });
-    await firekitUser.updateProfileInfo({});
+    await firekitAuthManager.updateUserData({ phoneNumber: _phone.value });
+    await firekitAuthManager.updateProfileInfo({});
     toast.success("Phone number updated successfully.");
     haserror = false;
   }
@@ -93,7 +94,7 @@
                 name="phone"
                 type="tel"
                 class="input input-bordered w-full rounded  bg-transparent px-3  text-md border-[#DBDEE2]"
-                onbeforeinput={(e) => {
+                onbeforeinput={(e:any) => {
                   if (
                     !/^\d*$/.test(e.data) &&
                     e.inputType !== "deleteContentBackward" &&

@@ -1,7 +1,7 @@
 <script lang="ts">
   import ResetPassword from "$lib/auth/reset-password.svelte";
-  import { firekitUser } from "$lib/firebase/auth/user.svelte";
-  let isLoggedin = $derived(firekitUser.isLoggedIn);
+  import { firekitAuthManager } from "$lib/firebase/auth/auth-manager.svelte.js";
+  let isLoggedin = $derived(firekitAuthManager.isLoggedIn);
 </script>
 
 <ResetPassword

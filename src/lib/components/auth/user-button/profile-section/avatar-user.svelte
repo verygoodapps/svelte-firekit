@@ -1,32 +1,31 @@
 <script lang="ts">
   import * as Avatar from "$lib/components/ui/avatar/index.js";
-  import Button from "$lib/components/ui/button/button.svelte";
-  import Input from "$lib/components/ui/input/input.svelte";
-  import { firekitUser } from "$lib/firebase/auth/user.svelte.js";
+  import { firekitAuthManager } from "$lib/firebase/auth/auth-manager.svelte.js";
+
   import { firekitUploadTask } from "$lib/firebase/storage/upload-task.svelte.js";
   import { getInitials } from "$lib/utils.js";
 
-  function uploadPhoto() {
-    // firekitUploadTask();
-  }
-
   $effect(() => {
-    if (uploadTask?.downloadURL) {
-      console.log(uploadTask?.downloadURL);
-      //   firekitUser.updateProfile({ photoURL: uploadTask?.downloadURL });
-      firekitUser.updateUserData({ photoURL: uploadTask?.downloadURL });
-      firekitUser.updateProfileInfo({
-        displayName: firekitUser.data?.displayName as string,
+    console.log(progress);
+    if (progress === 100 && uploadTask?.downloadURL) {
+      console.log("updated data");
+      firekitAuthManager.updateUserData({ photoURL: uploadTask?.downloadURL });
+      firekitAuthManager.updateProfileInfo({
+        displayName: firekitAuthManager.data?.displayName as string,
         photoURL: uploadTask?.downloadURL,
       });
+      progress = 0;
     }
   });
 
-  let progress: number = $derived(uploadTask?.progress || 0 * 1);
+  // $effect(()=>{
+  //   console.log(uploadTask?.downloadURL)
+  // })
 
+  let uploadTask: any = $state(null);
+  let progress: number = $derived(uploadTask?.progress || 0 * 1);
   let imageUrl: string = $state("");
   let selectedImage: File | null = $state(null);
-  let uploadTask: any = $state(null);
   let inputfile: any;
 
   async function handleImageUpload(event: Event) {
@@ -39,15 +38,22 @@
     }
 
     uploadTask = firekitUploadTask(
-      `users-profile/${firekitUser.uid}/profile`,
+      `users-profile/${firekitAuthManager.uid}/profile`,
       file
     );
+    
+
+    // firekitAuthManager.updateUserData({ photoURL: uploadTask?.downloadURL });
+    // firekitAuthManager.updateProfileInfo({
+    //   displayName: firekitAuthManager.data?.displayName as string,
+    //   photoURL: uploadTask?.downloadURL,
+    // });
   }
 </script>
 
 <section class="space-y-5 border-t-slate-200 border-t-[2px] pt-4">
   <div class="grid sm:grid-cols-12 gap-y-1.5 sm:gap-y-0 sm:gap-x-5">
-    <div class="sm:col-span-4 xl:col-span-3 ">
+    <div class="sm:col-span-4 xl:col-span-3">
       <p class="sm:mt-2.5 inline-block text-sm text-foreground-500">Profile</p>
     </div>
 
@@ -56,20 +62,14 @@
         <div class="flex gap-2 items-center">
           <button onclick={() => inputfile.click()}>
             <Avatar.Root class="size-[70px]">
-              <Avatar.Image src={firekitUser.data?.photoURL} alt="Avatar" />
+              <Avatar.Image
+                src={firekitAuthManager.data?.photoURL}
+                alt="Avatar"
+              />
               <Avatar.Fallback>
-                {getInitials(firekitUser.data?.displayName)}
+                {getInitials(firekitAuthManager.data?.displayName)}
               </Avatar.Fallback>
             </Avatar.Root>
-            <!-- <Avatar.Root class="size-[70px]">
-              {#if firekitUser.photoURL}
-                <Avatar.Image src={firekitUser?.photoURL} alt="" />
-              {:else}
-                <Avatar.Fallback class="text-2xl"
-                  >{getInitials(firekitUser?.displayName)}</Avatar.Fallback
-                >
-              {/if}
-            </Avatar.Root> -->
           </button>
           <input
             bind:this={inputfile}
@@ -79,10 +79,11 @@
             class="hidden"
           />
           <div class="grid flex-1 text-left text-sm leading-tight">
-            <span class="truncate font-semibold">{firekitUser.data?.displayName}</span
+            <span class="truncate font-semibold"
+              >{firekitAuthManager.data?.displayName}</span
             >
             <span class="truncate text-sm text-slate-400"
-              >{firekitUser.data?.email}</span
+              >{firekitAuthManager.data?.email}</span
             >
             {#if progress > 0 && !uploadTask?.completed}
               <div

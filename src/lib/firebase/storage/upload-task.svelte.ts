@@ -4,78 +4,80 @@ import { browser } from "$app/environment";
 import { firebaseService } from "../firebase.js";
 
 class FirekitUploadTask {
-    private _progress = $state(0);
-    private _error = $state<Error | null>(null);
-    private _snapshot = $state<UploadTaskSnapshot | null>(null);
-    private _downloadURL = $state<string | null>(null);
-    private _completed = $state(false);
-    private uploadTask: UploadTask | null = null;
-    private storageRef: StorageReference | null = null;
+  private _progress = $state(0);
+  private _error = $state<Error | null>(null);
+  private _snapshot = $state<UploadTaskSnapshot | null>(null);
+  private _downloadURL = $state<string | null>(null);
+  private _completed = $state(false);
+  private uploadTask: UploadTask | null = null;
+  private storageRef: StorageReference | null = null;
+  readonly URLdownload = $derived(this._downloadURL);
 
-    constructor(path: string, file: File) {
-        if (browser) {
-            this.initializeUpload(path, file);
+  constructor(path: string, file: File) {
+    if (browser) {
+      this.initializeUpload(path, file);
+    }
+  }
+
+  private initializeUpload(path: string, file: File) {
+    try {
+      const storage = firebaseService.getStorageInstance();
+      this.storageRef = ref(storage, path);
+      this.uploadTask = uploadBytesResumable(this.storageRef, file);
+
+      this.uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          this._snapshot = snapshot;
+          this._progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        },
+        (error) => {
+          this._error = error;
+        },
+        async () => {
+          if (this.storageRef) {
+            this._downloadURL = await getDownloadURL(this.storageRef);
+            this._completed = true;
+          }
         }
+      );
+    } catch (error) {
+      this._error = error as Error;
     }
+  }
 
-    private initializeUpload(path: string, file: File) {
-        try {
-            const storage = firebaseService.getStorageInstance();
-            this.storageRef = ref(storage, path);
-            this.uploadTask = uploadBytesResumable(this.storageRef, file);
+  pause() {
+    this.uploadTask?.pause();
+  }
 
-            this.uploadTask.on(
-                'state_changed',
-                (snapshot) => {
-                    this._snapshot = snapshot;
-                    this._progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                },
-                (error) => {
-                    this._error = error;
-                },
-                async () => {
-                    if (this.storageRef) {
-                        this._downloadURL = await getDownloadURL(this.storageRef);
-                        this._completed = true;
-                    }
-                }
-            );
-        } catch (error) {
-            this._error = error as Error;
-        }
-    }
+  resume() {
+    this.uploadTask?.resume();
+  }
 
-    pause() {
-        this.uploadTask?.pause();
-    }
+  cancel() {
+    this.uploadTask?.cancel();
+  }
 
-    resume() {
-        this.uploadTask?.resume();
-    }
+  get progress() {
+    return this._progress;
+  }
 
-    cancel() {
-        this.uploadTask?.cancel();
-    }
+  get error() {
+    return this._error;
+  }
 
-    get progress() {
-        return this._progress;
-    }
+  get snapshot() {
+    return this._snapshot;
+  }
 
-    get error() {
-        return this._error;
-    }
+  get downloadURL() {
+    return this._downloadURL;
+  }
 
-    get snapshot() {
-        return this._snapshot;
-    }
-
-    get downloadURL() {
-        return this._downloadURL;
-    }
-
-    get completed() {
-        return this._completed;
-    }
+  get completed() {
+    return this._completed;
+  }
 }
 
 export function firekitUploadTask(path: string, file: File) {

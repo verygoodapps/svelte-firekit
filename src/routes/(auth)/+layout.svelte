@@ -1,18 +1,17 @@
 <script>
   import { goto } from "$app/navigation";
-  import { firekitAuthGuard } from "$lib/firebase/auth/auth-guard.svelte";
-  import { firekitUser } from "$lib/firebase/auth/user.svelte";
+  import { firekitAuthManager } from "$lib/firebase/auth/auth-manager.svelte";
   import { onMount } from "svelte";
 
   let { children } = $props();
-  let loading = $derived(firekitAuthGuard.loading);
+  let loading = $derived(firekitAuthManager?.loading);
 
   $effect(() => {
     console.log("------------------------------------------");
     console.log("AUTH");
-    console.log("loading:", loading);
-    console.log("firekitUser:", firekitUser.isLoggedIn);
-    if (!loading || firekitUser.isLoggedIn) {
+    console.log("initialized:", firekitAuthManager?.initialized);
+    console.log("isLoggedIn:", firekitAuthManager?.isLoggedIn);
+    if (firekitAuthManager?.initialized && firekitAuthManager?.isLoggedIn) {
       console.log("REDIRECT TO /DASHBOARD");
       goto("/dashboard");
     }

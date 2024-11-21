@@ -1,23 +1,22 @@
 <script lang="ts">
   import Button from "$lib/components/ui/button/button.svelte";
-  import { firekitUser } from "$lib/firebase/auth/user.svelte.js";
+    import { firekitAuthManager } from "$lib/firebase/auth/auth-manager.svelte.js";
+
   import Input from "$lib/components/ui/input/input.svelte";
-  import Label from "$lib/components/ui/label/label.svelte";
   import { toast } from "svelte-sonner";
-  import { firekitAuth } from "$lib/firebase/auth/auth.js";
 
   let email: string = $state("");
   let haserror = $state(false);
 
   $effect(() => {
-    email = firekitUser.data?.email as string;
+    email = firekitAuthManager.data?.email as string;
   });
 
   async function handleChangeEmail() {
     console.log(email);
     haserror = false;
-    console.log(firekitUser.data?.email);
-    if (email === firekitUser.data?.email) {
+    console.log(firekitAuthManager.data?.email);
+    if (email === firekitAuthManager.data?.email) {
       toast.error("The email is the same as your current email.");
       haserror = true;
       return;
@@ -29,7 +28,7 @@
       return;
     }
 
-    await firekitUser.updateEmailUser(email);
+    await firekitAuthManager.updateEmailUser(email);
     // toast.success("Email updated successfully!");
     // setTimeout(async () => {
     //   await firekitAuth.logOut();
