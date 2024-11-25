@@ -47,7 +47,7 @@ class FirekitDocumentMutations {
     }
   ) {
     const firestore = firebaseService.getDb();
-    const docRef = doc(firestore, path);
+    const docRef = doc(collection(firestore, path));
 
     const dataToSet = {
       ...data,
@@ -57,9 +57,11 @@ class FirekitDocumentMutations {
         updatedAt: serverTimestamp(),
         updatedBy: firekitAuthManager.uid,
       }),
+      uid: docRef.id,
     };
 
-    return setDoc(docRef, dataToSet, { merge: options.merge });
+    await setDoc(docRef, dataToSet, { merge: options.merge });
+    return docRef.id;
   }
 
   async update<T extends DocumentData>(
