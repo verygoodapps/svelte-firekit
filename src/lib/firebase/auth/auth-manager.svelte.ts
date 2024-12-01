@@ -4,11 +4,10 @@ import { firebaseService } from "$lib/firebase/firebase.js";
 import { toast } from "svelte-sonner";
 import {
   onAuthStateChanged,
-  updateCurrentUser,
   updateEmail,
   updatePassword,
-  updatePhoneNumber,
   updateProfile,
+  sendEmailVerification,
   type User,
 } from "firebase/auth";
 import {
@@ -18,9 +17,10 @@ import {
   updateDoc,
   type DocumentData,
 } from "firebase/firestore";
-import { firekitAuth } from "./auth.js";
 
+// Types
 type UserClaims = Record<string, any>;
+
 interface UserData extends DocumentData {
   displayName?: string;
   email?: string;
@@ -32,6 +32,7 @@ interface UserData extends DocumentData {
   settings?: Record<string, any>;
   [key: string]: any;
 }
+
 interface GuardConfig {
   authRequired?: boolean;
   redirectTo?: string;
@@ -41,23 +42,40 @@ interface GuardConfig {
   redirectParams?: Record<string, string>;
 }
 
+interface AuthSession {
+  lastActivity: number;
+  deviceId: string;
+  platform: string;
+}
+
+class AuthError extends Error {
+  constructor(
+    message: string,
+    public code: string = 'unknown',
+    public originalError?: Error
+  ) {
+    super(message);
+    this.name = 'AuthError';
+  }
+}
+
 export class FirekitAuthManager {
   private static instance: FirekitAuthManager;
+  private readonly SESSION_TIMEOUT = 30 * 60 * 1000; // 30 minutes
+  private activityInterval: ReturnType<typeof setInterval> | null = null;
+  private _initPromise: Promise<void> | null = null;
 
-  // User-related states
+  // State using Svelte 5 runes
   private _user: User | null | undefined = $state();
   private _userData: UserData | null = $state(null);
   private _claims: UserClaims = $state({});
   private _initialized = $state(false);
-  private _initPromise: Promise<void> | null = null;
-
-  // Auth-Guard related states
   private _loading = $state(true);
   private _error = $state<Error | null>(null);
-  private _lastValidationTime = 0;
-  private readonly VALIDATION_THROTTLE = 1000; // 1 second
+  private _currentSession: AuthSession | null = $state(null);
+  private _lastValidationTime = $state(0);
 
-  // Derived states
+  // Derived state
   readonly isLoggedIn = $derived(Boolean(this._user));
   readonly uid = $derived(this._user?.uid);
   readonly email = $derived(this._user?.email);
@@ -67,10 +85,14 @@ export class FirekitAuthManager {
   readonly claims = $derived(this._claims);
   readonly data = $derived(this._userData);
   readonly initialized = $derived(this._initialized);
+  readonly loading = $derived(this._loading);
+  readonly error = $derived(this._error);
+  readonly sessionActive = $derived(Boolean(this._currentSession));
 
   private constructor() {
     if (browser) {
       this.initialize();
+      this.setupActivityTracking();
     }
   }
 
@@ -85,15 +107,11 @@ export class FirekitAuthManager {
     if (this._initialized) return;
 
     this._initPromise = new Promise((resolve) => {
-      onAuthStateChanged(firebaseService.getAuthInstance(), async (user) => {
-        this._user = user;
-        if (user) {
-          await Promise.all([this.loadUserData(), this.loadUserClaims()]);
-        } else {
-          this._userData = null;
-          this._claims = {};
-        }
-        this._initialized = true;
+      const auth = firebaseService.getAuthInstance();
+      if (!auth) throw new AuthError('Firebase Auth not initialized', 'init_failed');
+
+      onAuthStateChanged(auth, async (user) => {
+        await this.handleAuthStateChange(user);
         resolve();
       });
     });
@@ -104,19 +122,44 @@ export class FirekitAuthManager {
     return this._initPromise || Promise.resolve();
   }
 
-  private async loadUserData() {
-    if (!this._user?.uid) return;
+  private async handleAuthStateChange(user: User | null): Promise<void> {
+    this._loading = true;
 
-    const docRef = doc(firebaseService.getDb(), "users", this._user.uid);
+    try {
+      if (user) {
+        this._user = user;
+        await Promise.all([
+          this.loadUserData(user.uid),
+          this.loadUserClaims(user)
+        ]);
+        this.initializeSession();
+      } else {
+        this._user = null;
+        this._userData = null;
+        this._claims = {};
+        this.clearSession();
+      }
+
+      this._initialized = true;
+      this._error = null;
+    } catch (error) {
+      this.handleError(error);
+    } finally {
+      this._loading = false;
+    }
+  }
+
+  private async loadUserData(uid: string): Promise<void> {
+    const docRef = doc(firebaseService.getDb(), "users", uid);
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
       this._userData = docSnap.data() as UserData;
     } else {
       const initialData: UserData = {
-        displayName: this._user.displayName || "",
-        email: this._user.email || "",
-        photoURL: this._user.photoURL || "",
+        displayName: this._user?.displayName || "",
+        email: this._user?.email || "",
+        photoURL: this._user?.photoURL || "",
         createdAt: new Date(),
         updatedAt: new Date(),
         isProfileComplete: false,
@@ -125,19 +168,161 @@ export class FirekitAuthManager {
     }
   }
 
-  private async loadUserClaims() {
-    if (!this._user) return;
-
-    const tokenResult = await this._user.getIdTokenResult();
+  private async loadUserClaims(user: User): Promise<void> {
+    const tokenResult = await user.getIdTokenResult();
     this._claims = tokenResult.claims as UserClaims;
   }
 
-  get user(): User | null | undefined {
-    return this._user;
+  private setupActivityTracking(): void {
+    if (browser) {
+      ['mousedown', 'keydown', 'scroll', 'touchstart'].forEach(eventName => {
+        window.addEventListener(eventName, () => this.updateLastActivity());
+      });
+
+      this.activityInterval = setInterval(() => this.checkSession(), 60000);
+    }
+  }
+
+  private initializeSession(): void {
+    this._currentSession = {
+      lastActivity: Date.now(),
+      deviceId: this.generateDeviceId(),
+      platform: this.getPlatformInfo()
+    };
+  }
+
+  private updateLastActivity(): void {
+    if (this._currentSession) {
+      this._currentSession.lastActivity = Date.now();
+    }
+  }
+
+  private async checkSession(): Promise<void> {
+    if (!this._currentSession) return;
+
+    const inactiveTime = Date.now() - this._currentSession.lastActivity;
+    if (inactiveTime > this.SESSION_TIMEOUT) {
+      await this.handleSessionTimeout();
+    }
+  }
+
+  private async handleSessionTimeout(): Promise<void> {
+    toast.warning('Session expired due to inactivity', {
+      description: 'Please log in again to continue.',
+      duration: 5000
+    });
+    await this.logOut();
+  }
+
+  private clearSession(): void {
+    this._currentSession = null;
+    if (this.activityInterval) {
+      clearInterval(this.activityInterval);
+      this.activityInterval = null;
+    }
+  }
+
+  private handleError(error: unknown): void {
+    const authError = error instanceof AuthError
+      ? error
+      : new AuthError(
+        error instanceof Error ? error.message : 'An unknown error occurred',
+        'unknown',
+        error instanceof Error ? error : undefined
+      );
+
+    this._error = authError;
+    this._loading = false;
+
+    console.error('[FirekitAuthManager]', authError);
+  }
+
+  private generateDeviceId(): string {
+    return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+  }
+
+  private getPlatformInfo(): string {
+    if (!browser) return 'server';
+    return `${navigator.platform} - ${navigator.userAgent}`;
+  }
+
+  private validateClaims(requiredClaims: string[], userClaims: UserClaims): boolean {
+    return requiredClaims.every(claim => userClaims[claim]);
+  }
+
+  private async handleRedirect(redirectTo: string, params?: Record<string, string>): Promise<void> {
+    const url = new URL(redirectTo, window.location.origin);
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        url.searchParams.append(key, value);
+      });
+    }
+    await goto(url.toString());
+  }
+
+  // Public Methods
+  async validateAuth({
+    authRequired = true,
+    redirectTo = "/login",
+    requiredClaims = [],
+    requiredData,
+    allowIf,
+    redirectParams,
+  }: GuardConfig = {}): Promise<boolean> {
+    if (!browser) return true;
+
+    const now = Date.now();
+    if (now - this._lastValidationTime < 1000) return false;
+    this._lastValidationTime = now;
+
+    try {
+      this._loading = true;
+      this._error = null;
+      await this.waitForInit();
+
+      // Basic auth validation
+      if (authRequired && !this._user) {
+        await this.handleRedirect(redirectTo, {
+          ...redirectParams,
+          returnTo: window.location.pathname,
+        });
+        return false;
+      }
+
+      if (!authRequired && this._user) {
+        await this.handleRedirect(redirectTo, redirectParams);
+        return false;
+      }
+
+      // Custom conditions
+      if (allowIf && !allowIf(this)) {
+        await this.handleRedirect(redirectTo, redirectParams);
+        return false;
+      }
+
+      // Claims validation
+      if (requiredClaims.length > 0 && !this.validateClaims(requiredClaims, this._claims)) {
+        await this.handleRedirect(redirectTo, redirectParams);
+        return false;
+      }
+
+      // Data validation
+      if (requiredData && !requiredData(this._userData)) {
+        await this.handleRedirect(redirectTo, redirectParams);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      this.handleError(error);
+      return false;
+    } finally {
+      this._loading = false;
+    }
   }
 
   async updateEmailUser(email: string) {
-    if (!this._user) throw new Error("No authenticated user");
+    if (!this._user) throw new AuthError("No authenticated user", "no_user");
     try {
       await updateEmail(this._user, email);
       await this.updateUserData({ email });
@@ -147,16 +332,22 @@ export class FirekitAuthManager {
           "Please note that you will be logged out, and you will need to log in again using your new email address.",
       });
       setTimeout(async () => {
-        await firekitAuth.logOut();
+        await this.logOut();
       }, 4500);
     } catch (error) {
-      toast.error(error.message);
+      this.handleError(error);
+      throw error;
     }
   }
 
   async updatePassword(password: string) {
-    if (!this._user) throw new Error("No authenticated user");
-    await updatePassword(this._user, password);
+    if (!this._user) throw new AuthError("No authenticated user", "no_user");
+    try {
+      await updatePassword(this._user, password);
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
   }
 
   async updateProfileInfo({
@@ -166,36 +357,80 @@ export class FirekitAuthManager {
     displayName?: string;
     photoURL?: string;
   }) {
-    if (!this._user) throw new Error("No authenticated user");
+    if (!this._user) throw new AuthError("No authenticated user", "no_user");
     if (!displayName && !photoURL) return;
-    if (displayName) await updateProfile(this._user, { displayName });
-    if (photoURL) await updateProfile(this._user, { photoURL });
+
+    try {
+      if (displayName) await updateProfile(this._user, { displayName });
+      if (photoURL) await updateProfile(this._user, { photoURL });
+      await this.updateUserData({ displayName, photoURL });
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
   }
 
   async updateUserData(data: Partial<UserData>) {
-    if (!this._user?.uid) throw new Error("No authenticated user");
+    if (!this._user?.uid) throw new AuthError("No authenticated user", "no_user");
 
-    const docRef = doc(firebaseService.getDb(), "users", this._user.uid);
-    const updateData = { ...data, updatedAt: new Date() };
+    try {
+      const docRef = doc(firebaseService.getDb(), "users", this._user.uid);
+      const updateData = { ...data, updatedAt: new Date() };
 
-    await updateDoc(docRef, updateData);
-    await this.loadUserData();
+      await updateDoc(docRef, updateData);
+      await this.loadUserData(this._user.uid);
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
   }
 
   async saveUserData(data: UserData) {
-    if (!this._user?.uid) throw new Error("No authenticated user");
+    if (!this._user?.uid) throw new AuthError("No authenticated user", "no_user");
 
-    const docRef = doc(firebaseService.getDb(), "users", this._user.uid);
-    const saveData = {
-      ...data,
-      createdAt: data.createdAt || new Date(),
-      updatedAt: new Date(),
-    };
+    try {
+      const docRef = doc(firebaseService.getDb(), "users", this._user.uid);
+      const saveData = {
+        ...data,
+        createdAt: data.createdAt || new Date(),
+        updatedAt: new Date(),
+      };
 
-    await setDoc(docRef, saveData);
-    await this.loadUserData();
+      await setDoc(docRef, saveData);
+      await this.loadUserData(this._user.uid);
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
   }
 
+  async sendVerificationEmail(): Promise<void> {
+    if (!this._user) throw new AuthError('No authenticated user', 'no_user');
+
+    try {
+      await sendEmailVerification(this._user);
+      toast.success('Verification email sent!');
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
+  }
+
+  async refreshUserData(): Promise<void> {
+    if (!this._user) return;
+
+    try {
+      await Promise.all([
+        this.loadUserData(this._user.uid),
+        this.loadUserClaims(this._user)
+      ]);
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
+  }
+
+  // Helper methods
   hasRequiredClaims(requiredClaims: string[]): boolean {
     return requiredClaims.every((claim) => this._claims[claim]);
   }
@@ -208,99 +443,8 @@ export class FirekitAuthManager {
     return Boolean(this._claims.premium);
   }
 
-  private shouldThrottleValidation(): boolean {
-    const now = Date.now();
-    if (now - this._lastValidationTime < this.VALIDATION_THROTTLE) {
-      return true;
-    }
-    this._lastValidationTime = now;
-    return false;
-  }
-
-  private async handleRedirect(
-    redirectTo: string,
-    params?: Record<string, string>
-  ): Promise<void> {
-    const url = new URL(redirectTo, window.location.origin);
-    if (params) {
-      Object.entries(params).forEach(([key, value]) => {
-        url.searchParams.append(key, value);
-      });
-    }
-    await goto(url.toString());
-  }
-
-  private async validateClaims(
-    requiredClaims: string[],
-    userClaims?: UserClaims
-  ): Promise<boolean> {
-    if (!requiredClaims.length) return true;
-    if (!userClaims) return false;
-
-    return requiredClaims.every((claim) => userClaims[claim]);
-  }
-
-  async validateAuth({
-    authRequired = true,
-    redirectTo = "/login",
-    requiredClaims = [],
-    requiredData,
-    allowIf,
-    redirectParams,
-  }: GuardConfig = {}): Promise<boolean> {
-    if (!browser) return true;
-    if (this.shouldThrottleValidation()) return true;
-
-    try {
-      this._loading = true;
-      this._error = null;
-      await this.waitForInit();
-
-      const isAuthenticated = this.isLoggedIn;
-
-      if (authRequired && !isAuthenticated) {
-        await this.handleRedirect(redirectTo, {
-          ...redirectParams,
-          returnTo: window.location.pathname,
-        });
-        return false;
-      }
-
-      if (allowIf && !allowIf(this)) {
-        await this.handleRedirect(redirectTo, redirectParams);
-        return false;
-      }
-
-      if (requiredClaims.length > 0) {
-        const userClaims = await firekitAuthManager.user?.getIdTokenResult();
-        const hasClaims = await this.validateClaims(
-          requiredClaims,
-          userClaims?.claims
-        );
-        if (!hasClaims) {
-          await this.handleRedirect(redirectTo, redirectParams);
-          return false;
-        }
-      }
-
-      if (requiredData && !requiredData(this._userData)) {
-        await this.handleRedirect(redirectTo, redirectParams);
-        return false;
-      }
-
-      return true;
-    } catch (error) {
-      this._error = error instanceof Error ? error : new Error(String(error));
-      return false;
-    } finally {
-      this._loading = false;
-    }
-  }
-
-  async requireAuth(
-    redirectTo = "/login",
-    redirectParams?: Record<string, string>
-  ) {
+  // Convenience methods for route guards
+  async requireAuth(redirectTo = "/login", redirectParams?: Record<string, string>) {
     return this.validateAuth({
       authRequired: true,
       redirectTo,
@@ -308,10 +452,7 @@ export class FirekitAuthManager {
     });
   }
 
-  async requireNoAuth(
-    redirectTo = "/dashboard",
-    redirectParams?: Record<string, string>
-  ) {
+  async requireNoAuth(redirectTo = "/dashboard", redirectParams?: Record<string, string>) {
     return this.validateAuth({
       authRequired: false,
       redirectTo,
@@ -319,11 +460,7 @@ export class FirekitAuthManager {
     });
   }
 
-  async requireClaims(
-    claims: string[],
-    redirectTo = "/login",
-    redirectParams?: Record<string, string>
-  ) {
+  async requireClaims(claims: string[], redirectTo = "/login", redirectParams?: Record<string, string>) {
     return this.validateAuth({
       requiredClaims: claims,
       redirectTo,
@@ -343,12 +480,20 @@ export class FirekitAuthManager {
     });
   }
 
-  get loading() {
-    return this._loading;
+  async logOut() {
+    try {
+      await firebaseService.getAuthInstance().signOut();
+      this.clearSession();
+    } catch (error) {
+      this.handleError(error);
+      throw error;
+    }
   }
 
-  get error() {
-    return this._error;
+  // Cleanup
+  destroy(): void {
+    this.clearSession();
+    // Additional cleanup if needed
   }
 }
 
