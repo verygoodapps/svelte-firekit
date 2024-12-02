@@ -20,21 +20,23 @@
     labelLinkTerms = "Terms and Conditions",
     labelBtnFormEmail = "Sign up",
     labelDivider = "Or",
+    redirectTo = "/dashboard",
   }: {
-    title: string;
-    subtitle: string;
-    labelLink: string;
-    link: string;
-    labelBtnGoogle: string;
-    labelFisrtName: string;
-    labelLastName: string;
-    labelEmail: string;
-    labelPassword: string;
-    linkTerms: string;
-    labelTerms: string;
-    labelLinkTerms: string;
-    labelBtnFormEmail: string;
-    labelDivider: string;
+    title?: string;
+    subtitle?: string;
+    labelLink?: string;
+    link?: string;
+    labelBtnGoogle?: string;
+    labelFisrtName?: string;
+    labelLastName?: string;
+    labelEmail?: string;
+    labelPassword?: string;
+    linkTerms?: string;
+    labelTerms?: string;
+    labelLinkTerms?: string;
+    labelBtnFormEmail?: string;
+    labelDivider?: string;
+    redirectTo?: string;
   } = $props();
 </script>
 
@@ -64,6 +66,7 @@
       {labelTerms}
       {labelLinkTerms}
       {labelBtnFormEmail}
+      {redirectTo}
     />
   </Card.Content>
 </Card.Root>

@@ -26,7 +26,7 @@
     {/snippet}
   </Dialog.Trigger>
   <Dialog.Content
-    class="overflow-hidden p-0 md:max-h-[500px] md:max-w-[700px] lg:max-w-[800px]"
+    class="overflow-y-auto md:overflow-hidden p-0 max-h-[80dvh] md:max-h-[500px] md:max-w-[700px] lg:max-w-[800px]"
   >
     <Dialog.Title class="sr-only">Settings</Dialog.Title>
     <Dialog.Description class="sr-only"
@@ -58,7 +58,7 @@
           </Sidebar.Group>
         </Sidebar.Content>
       </Sidebar.Root>
-      <main class="flex h-[480px] flex-1 flex-col overflow-hidden">
+      <main class="flex sm:h-auto md:h-[480px]  flex-1 flex-col overflow-hidden">
         <header
           class="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
         >
@@ -76,7 +76,7 @@
             </Breadcrumb.Root>
           </div>
         </header>
-        <div class="flex flex-1 flex-col gap-4 overflow-y-auto p-4 pt-0">
+        <div class="flex flex-1 flex-col gap-4 overflow-y-auto  p-4 pt-0 ">
           {#if section === "Profile"}
             <ProfileSection></ProfileSection>
           {/if}

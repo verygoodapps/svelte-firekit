@@ -17,4 +17,5 @@
   labelLinkTerms="Terms and Conditions"
   labelBtnFormEmail="Sign up"
   labelDivider="Or"
+  redirectTo="/dashboard"
 ></SignUpPage>

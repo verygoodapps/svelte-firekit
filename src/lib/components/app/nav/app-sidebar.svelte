@@ -16,7 +16,7 @@
 <Sidebar.Root bind:ref {collapsible} {...restProps}>
   <Sidebar.Header>
 	<section class="flex justify-center items-center gap-2 my-4">
-		<UserButton></UserButton> 
+		<UserButton redirectTo="/sign-in"></UserButton> 
 		<div class="flex flex-col">
 			<small>{firekitAuthManager.data?.displayName}</small>
 			<small>{firekitAuthManager.data?.email}</small>

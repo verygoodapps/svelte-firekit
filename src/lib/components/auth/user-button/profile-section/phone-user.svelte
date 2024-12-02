@@ -80,7 +80,7 @@
       </p>
     </div>
 
-    <div class="sm:col-span-8 xl:col-span-9">
+    <div class="sm:col-span-8 lg:col-span-6">
       <div class="flex flex-wrap j items-center gap-3 sm:gap-5">
         <div class="flex gap-2 items-center w-full">
           <div class="flex flex-col gap-2 text-sm leading-tight">

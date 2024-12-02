@@ -8,6 +8,7 @@
     subtitle = "Don't have an account yet?",
     textLink = "Sign up here",
     link = "/sign-up",
+    redirectTo = "/dashboard",
     labelBtnGoogle = "Sign in with",
     labelEmail = "Email",
     labelPassword = "Password",
@@ -16,17 +17,18 @@
     labelBtnFormEmail = "Sign",
     labelDivider = "Or",
   }: {
-    title: string;
-    subtitle: string;
-    textLink: string;
-    link: string;
-    labelBtnGoogle: string;
-    labelEmail: string;
-    labelPassword: string;
-    labellLinkEmailForm: string;
-    linkForgetPassword: string;
-    labelBtnFormEmail: string;
-    labelDivider: string;
+    title?: string;
+    subtitle?: string;
+    textLink?: string;
+    link?: string;
+    redirectTo?: string;
+    labelBtnGoogle?: string;
+    labelEmail?: string;
+    labelPassword?: string;
+    labellLinkEmailForm?: string;
+    linkForgetPassword?: string;
+    labelBtnFormEmail?: string;
+    labelDivider?: string;
   } = $props();
 </script>
 
@@ -53,6 +55,7 @@
       {labellLinkEmailForm}
       {linkForgetPassword}
       {labelBtnFormEmail}
+      {redirectTo}
     />
   </Card.Content>
 </Card.Root>

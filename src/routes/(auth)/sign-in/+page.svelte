@@ -7,6 +7,7 @@
   subtitle="Don't have an account yet?"
   textLink="Sign up here"
   link="/sign-up"
+  redirectTo="/dashboard"
   labelBtnGoogle="Sign in with"
   labelEmail="Email"
   labelPassword="Password"

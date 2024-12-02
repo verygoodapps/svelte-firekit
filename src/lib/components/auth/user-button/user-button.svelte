@@ -13,9 +13,9 @@
 
   let isOpen = $state(false);
 
-  let { nav }: { nav?: NavItem[] } = $props();
+  let { nav, redirectTo="/sign-in" }: { nav?: NavItem[], redirectTo:string } = $props();
   async function handleLogout() {
-    await firekitAuth.logOut();
+    await firekitAuth.logOut(redirectTo);
   }
 </script>
 

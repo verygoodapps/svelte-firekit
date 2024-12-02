@@ -9,6 +9,7 @@
   import { valibot } from "sveltekit-superforms/adapters";
   import Button from "../ui/button/button.svelte";
   import Checkbox from "../ui/checkbox/checkbox.svelte";
+  import { goto } from "$app/navigation";
 
   let {
     labelFisrtName,
@@ -16,9 +17,10 @@
     labelEmail,
     labelPassword,
     linkTerms,
-	labelTerms,
-	labelLinkTerms,
+    labelTerms,
+    labelLinkTerms,
     labelBtnFormEmail,
+    redirectTo,
   }: {
     labelFisrtName: string;
     labelLastName: string;
@@ -28,6 +30,7 @@
     labelTerms: string;
     labelLinkTerms: string;
     labelBtnFormEmail: string;
+    redirectTo: string;
   } = $props();
 
   const data = defaults(valibot(signUpSchema));
@@ -46,6 +49,7 @@
         const displayName = `${firstName} ${lastName}`;
         await firekitAuth.registerWithEmail(email, password, displayName);
         toast.success("Account created successfully");
+        goto(redirectTo)
       } catch (error) {
         if (error instanceof Error) {
           toast.error(error.message);
@@ -57,8 +61,6 @@
   });
 
   const { form: formData, enhance } = form;
-
-  
 </script>
 
 <form method="POST" use:enhance class="space-y-2">

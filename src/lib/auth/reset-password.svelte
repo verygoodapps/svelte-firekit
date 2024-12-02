@@ -3,18 +3,19 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import * as Card from "$lib/components/ui/card/index.js";
 
+
   let {
-    title,
-    subtitle,
-    labelLink,
-    link,
-    redirect,
+    title="Forgot password?",
+    subtitle="Remember your password?",
+    labelLink="Sign in here",
+    link="/sign-in",
+    redirect="/sign-in"
   }: {
-    title: string;
-    subtitle: string;
-    labelLink: string;
-    link: string;
-    redirect: string;
+    title?: string;
+    subtitle?: string;
+    labelLink?: string;
+    link?: string;
+    redirect?: string;
   } = $props();
 </script>
 
