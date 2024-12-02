@@ -23,6 +23,8 @@ export { default as SignInPage } from './auth/sign-in.svelte';
 export { default as SignUpPage } from './auth/sign-up.svelte';
 export { default as ResetPassWordPage } from './auth/reset-password.svelte';
 export { default as AuthPage } from './auth/auth.svelte';
+export { default as RequireAuth } from './auth/require-auth.svelte';
+export { default as RequireNoAuth } from './auth/require-no-auth.svelte';
 
 
 export { default as ResetPassWordForm } from './components/auth/reset-password-form.svelte';

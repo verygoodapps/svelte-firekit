@@ -250,7 +250,7 @@ export class FirekitAuthManager {
     return requiredClaims.every(claim => userClaims[claim]);
   }
 
-  private async handleRedirect(redirectTo: string, params?: Record<string, string>): Promise<void> {
+  async handleRedirect(redirectTo: string, params?: Record<string, string>): Promise<void> {
     const url = new URL(redirectTo, window.location.origin);
     if (params) {
       Object.entries(params).forEach(([key, value]) => {
@@ -441,23 +441,6 @@ export class FirekitAuthManager {
 
   isPremium(): boolean {
     return Boolean(this._claims.premium);
-  }
-
-  // Convenience methods for route guards
-  async requireAuth(redirectTo = "/login", redirectParams?: Record<string, string>) {
-    return this.validateAuth({
-      authRequired: true,
-      redirectTo,
-      redirectParams,
-    });
-  }
-
-  async requireNoAuth(redirectTo = "/dashboard", redirectParams?: Record<string, string>) {
-    return this.validateAuth({
-      authRequired: false,
-      redirectTo,
-      redirectParams,
-    });
   }
 
   async requireClaims(claims: string[], redirectTo = "/login", redirectParams?: Record<string, string>) {
