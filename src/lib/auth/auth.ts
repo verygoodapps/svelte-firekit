@@ -8,7 +8,9 @@ import {
     sendEmailVerification,
     updateProfile,
     updatePassword,
-    type User
+    type User,
+    EmailAuthProvider,
+    reauthenticateWithCredential
 } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { firebaseService } from '../firebase.js';
@@ -84,11 +86,42 @@ class FirekitAuth {
         }
     }
 
-    async updateUserPassword(newPassword: string): Promise<void> {
-        if (this.auth.currentUser) {
+   async updateUserPassword(newPassword: string, currentPassword: string) {
+        if (!this.auth.currentUser) {
+            throw new Error('No authenticated user found.');
+        }
+
+        try {
+            await this.reauthenticateUser(currentPassword);
+
             await updatePassword(this.auth.currentUser, newPassword);
+
+            return { success: true, message: 'Password successfully updated.' };
+        } catch (error: any) {
+            if (error.code === 'auth/wrong-password') {
+                return { success: false, code: error.code, message: 'Reauthentication failed: incorrect password.' };
+            }
+            return { success: false, code: error.code || 'unknown_error', message: `Failed to update password: ${error.message || 'Unknown error occurred.'}` };
         }
     }
+
+    async reauthenticateUser(currentPassword: string) {
+        if (!this.auth.currentUser || !this.auth.currentUser.email) {
+            throw new Error('No authenticated user or email unavailable.');
+        }
+
+        const credential = EmailAuthProvider.credential(
+            this.auth.currentUser.email,
+            currentPassword
+        );
+
+        try {
+            await reauthenticateWithCredential(this.auth.currentUser, credential);
+        } catch (error: any) {
+            throw new Error(`Reauthentication failed: ${error.message || 'Unknown error occurred.'}`);
+        }
+    }
+
 }
 
 export const firekitAuth = FirekitAuth.getInstance();
