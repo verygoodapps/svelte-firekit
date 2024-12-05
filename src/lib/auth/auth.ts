@@ -137,8 +137,8 @@ class FirekitAuth {
         }
 
         try {
-            await this.auth.currentUser.delete();
             firekitDocMutations.delete(`users/${this.auth.currentUser.uid}`)
+            await this.auth.currentUser.delete();
             return { success: true, message: 'Account successfully deleted.' };
         } catch (error: any) {
            throw new Error(error.message)
