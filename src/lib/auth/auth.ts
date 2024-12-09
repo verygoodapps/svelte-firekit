@@ -31,21 +31,17 @@ class FirekitAuth {
         return FirekitAuth.instance;
     }
 
-    getDeviceIdentifier() {
-        return navigator.userAgent; // Puedes personalizar esto según tu preferencia.
-    }
+   
 
     async signInWithGoogle(): Promise<void> {
         const provider = new GoogleAuthProvider();
         const result = await signInWithPopup(this.auth, provider);
         await this.updateUserInFirestore(result.user);
-        await this.updateUserSession(result.user);
     }
 
     async signInWithEmail(email: string, password: string): Promise<void> {
         const result = await signInWithEmailAndPassword(this.auth, email, password);
         await this.updateUserInFirestore(result.user);
-        await this.updateUserSession(result.user);
     }
 
     async registerWithEmail(email: string, password: string, displayName: string): Promise<void> {
@@ -54,7 +50,6 @@ class FirekitAuth {
         if (user) {
             await updateProfile(user, { displayName });
             await this.updateUserInFirestore(user);
-            await this.updateUserSession(user);
             await sendEmailVerification(user);
         }
     }
@@ -143,43 +138,6 @@ class FirekitAuth {
         } catch (error: any) {
            throw new Error(error.message)
         }
-    }
-
-   
-    async updateUserSession(user) {
-
-        let nav = this.getDeviceIdentifier().replace(/[ /]/g, '');
-
-        const sessionId = `${user.uid}_${nav}`;
-
-        const db = firebaseService.getDatabaseInstance();
-        const userSessionsRef = ref(db, `sessions/${user.uid}`);
-
-        const userSessionsSnap = await get(userSessionsRef);
-
-        let sessionDatas = [];
-
-        if (userSessionsSnap.exists()) {
-            sessionDatas = userSessionsSnap.val().sessionDatas || [];
-
-            if (sessionDatas.some(session => session.uid === sessionId)) {
-                console.log('Session already registered from this device.');
-                return;
-            }
-        }
-
-        const newSessionData = {
-            uid: sessionId,
-            userId: user.uid,
-            device: this.getDeviceIdentifier(),
-            createdAt: new Date().toISOString(),
-            last_changed: new Date().toISOString(),
-            status: "online"
-        };
-
-        sessionDatas.push(newSessionData);
-
-        await set(userSessionsRef, { sessionDatas });
     }
 
 
