@@ -20,7 +20,9 @@ class FirekitDoc<T> {
                 onSnapshot(
                     this.docRef,
                     (snapshot) => {
-                        this._data = (snapshot.data() as T) ?? null;
+                        // this._data = (snapshot.data() as T) ?? null;
+                        const data = snapshot.data() as T | null;
+                        this._data = data ? { ...data, id: snapshot.id } : null;
                         this._loading = false;
                         this._error = null;
                     },
