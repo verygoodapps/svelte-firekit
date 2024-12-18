@@ -66,7 +66,7 @@ class FirekitDocumentMutations {
       const firestore = firebaseService.getDbInstance();
       const colRef = collection(firestore, collectionPath);
 
-      const dataToAdd = {
+      let dataToAdd = {
         ...data,
         ...(options.timestamps && this.getTimestampData()),
       };
@@ -74,9 +74,12 @@ class FirekitDocumentMutations {
       let docRef: DocumentReference<T>;
       if (options.customId) {
         docRef = doc(colRef, options.customId) as DocumentReference<T>;
+        dataToAdd = { ...dataToAdd, id: docRef.id }; // Agregar el id al documento
         await setDoc(docRef, dataToAdd);
       } else {
         docRef = await addDoc(colRef, dataToAdd) as DocumentReference<T>;
+        dataToAdd = { ...dataToAdd, id: docRef.id }; // Agregar el id al documento
+        await setDoc(docRef, dataToAdd); 
       }
 
       return {
