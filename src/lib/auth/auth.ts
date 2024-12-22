@@ -12,10 +12,9 @@ import {
     EmailAuthProvider,
     reauthenticateWithCredential,
 } from 'firebase/auth';
-import { doc, getDoc, setDoc, Timestamp } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { firebaseService } from '../firebase.js';
 import { firekitDocMutations } from '$lib/firestore/document-mutations.svelte.js';
- import { get, ref, set, update } from 'firebase/database';
 
 class FirekitAuth {
     private static instance: FirekitAuth;
@@ -31,7 +30,7 @@ class FirekitAuth {
         return FirekitAuth.instance;
     }
 
-   
+
 
     async signInWithGoogle(): Promise<void> {
         const provider = new GoogleAuthProvider();
@@ -90,7 +89,7 @@ class FirekitAuth {
         }
     }
 
-   async updateUserPassword(newPassword: string, currentPassword: string) {
+    async updateUserPassword(newPassword: string, currentPassword: string) {
         if (!this.auth.currentUser) {
             throw new Error('No authenticated user found.');
         }
@@ -136,7 +135,7 @@ class FirekitAuth {
             await this.auth.currentUser.delete();
             return { success: true, message: 'Account successfully deleted.' };
         } catch (error: any) {
-           throw new Error(error.message)
+            throw new Error(error.message)
         }
     }
 
