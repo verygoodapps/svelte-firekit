@@ -1,11 +1,3 @@
----
-slug: docs
-title: Welcome to Svelte Firekit
-description: a comprehensive library integrating SvelteKit and Firebase for building robust micro SaaS applications.
----
- 
-## Introduction to Svelte Firekit
- 
 Svelte Firekit is a powerful Firebase toolkit for SvelteKit applications, providing a comprehensive set of utilities, stores, and components for seamless Firebase integration. Whether you're building a micro SaaS, web application, or any Firebase-powered project, Svelte Firekit streamlines your development process.
  
 ## Installation
