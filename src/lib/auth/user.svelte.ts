@@ -1,27 +1,35 @@
-import { firebaseService } from "$lib/firebase.js";
+/**
+ * @module FirekitUser
+ */
+import { firebaseService } from "../firebase.js";
 import { onAuthStateChanged, updateEmail, updatePassword, updateProfile, type User } from "firebase/auth";
 
 /**
  * FirekitUser provides a singleton class for managing Firebase authentication state and user operations.
+ * Implements state management using SvelteKit's $state and $derived.
+ * 
  * @class
  * @example
  * ```typescript
- * // Get instance
+ * // Get instance and check auth state
  * const auth = firekitUser;
- * 
- * // Check if user is logged in
  * if (auth.isLoggedIn) {
  *   console.log(auth.user);
  * }
  * 
  * // Update user profile
  * await auth.updateDisplayName("John Doe");
+ * await auth.updatePhotoURL("https://example.com/photo.jpg");
  * ```
  */
 class FirekitUser {
     private static instance: FirekitUser;
+
+    /** @private Current user object state */
     private _user: User | undefined = $state();
+    /** @private Authentication initialization state */
     private _initialized: undefined | boolean = $state();
+    /** @private User login state */
     private _isLoggedIn: undefined | boolean = $state();
 
     /** Current user's UID */
@@ -35,6 +43,10 @@ class FirekitUser {
     /** Whether current user's email is verified */
     readonly emailVerified = $derived(this._user?.emailVerified);
 
+    /**
+     * Private constructor that initializes auth state listener
+     * @private
+     */
     private constructor() {
         const auth = firebaseService.getAuthInstance();
         onAuthStateChanged(auth, async (user) => {
@@ -89,7 +101,9 @@ class FirekitUser {
      * @param {string} email - The new email address
      * @throws {Error} If no user is authenticated
      * @example
+     * ```typescript
      * await firekitUser.updateEmailUser("new@email.com");
+     * ```
      */
     async updateEmailUser(email: string) {
         if (!this._user) throw new Error("No authenticated user");
@@ -101,7 +115,9 @@ class FirekitUser {
      * @param {string} password - The new password
      * @throws {Error} If no user is authenticated
      * @example
+     * ```typescript
      * await firekitUser.updatePassword("newPassword123");
+     * ```
      */
     async updatePassword(password: string) {
         if (!this._user) throw new Error("No authenticated user");
@@ -113,7 +129,9 @@ class FirekitUser {
      * @param {string} displayName - The new display name
      * @throws {Error} If no user is authenticated
      * @example
+     * ```typescript
      * await firekitUser.updateDisplayName("John Doe");
+     * ```
      */
     async updateDisplayName(displayName: string) {
         if (!this._user) throw new Error("No authenticated user");
@@ -125,7 +143,9 @@ class FirekitUser {
      * @param {string} photoURL - The new photo URL
      * @throws {Error} If no user is authenticated
      * @example
+     * ```typescript
      * await firekitUser.updatePhotoURL("https://example.com/photo.jpg");
+     * ```
      */
     async updatePhotoURL(photoURL: string) {
         if (!this._user) throw new Error("No authenticated user");
@@ -134,7 +154,9 @@ class FirekitUser {
 }
 
 /**
- * Singleton instance of FirekitUser
+ * Pre-initialized singleton instance of FirekitUser.
+ * Use this to access auth state and user operations.
+ * 
  * @const
  * @type {FirekitUser}
  */

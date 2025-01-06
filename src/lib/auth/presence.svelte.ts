@@ -2,26 +2,46 @@ import { ref, onDisconnect, onValue, get, set } from 'firebase/database';
 import { firebaseService } from '../firebase.js';
 import { browser } from '$app/environment';
 
+/**
+ * Geolocation configuration options
+ */
 interface GeolocationConfig {
+    /** Whether geolocation tracking is enabled */
     enabled: boolean;
+    /** Type of geolocation service to use */
     type: 'browser' | 'ip' | 'custom';
+    /** Custom function for retrieving geolocation */
     customGeolocationFn?: () => Promise<{ latitude: number; longitude: number; }>;
+    /** URL for IP-based geolocation service */
     ipServiceUrl?: string;
+    /** Whether user consent is required for location tracking */
     requireConsent?: boolean;
 }
 
+/**
+ * Presence service configuration options
+ */
 interface PresenceConfig {
+    /** Geolocation settings */
     geolocation?: GeolocationConfig;
-    sessionTTL?: number; // Time in milliseconds before a session is considered stale
-    updateInterval?: number; // How often to update presence in milliseconds
+    /** Session timeout in milliseconds */
+    sessionTTL?: number;
+    /** Presence update interval in milliseconds */
+    updateInterval?: number;
 }
 
+/**
+ * Location data structure
+ */
 interface Location {
     latitude: number | null;
     longitude: number | null;
     lastUpdated: string | null;
 }
 
+/**
+ * Session data structure
+ */
 interface SessionData {
     uid: string;
     userId: string;
@@ -32,6 +52,9 @@ interface SessionData {
     location?: Location;
 }
 
+/**
+ * Presence event structure
+ */
 type PresenceEvent = {
     type: 'status_change' | 'error' | 'init' | 'disconnect' | 'location_update';
     data?: any;
@@ -41,6 +64,23 @@ type PresenceEvent = {
 
 type PresenceEventCallback = (event: PresenceEvent) => void;
 
+/**
+ * Manages real-time user presence tracking with optional geolocation support
+ * @class
+ * @example
+ * ```typescript
+ * // Initialize presence tracking
+ * await presenceService.initialize(currentUser, {
+ *   geolocation: { enabled: true, type: 'browser' },
+ *   sessionTTL: 30 * 60 * 1000
+ * });
+ * 
+ * // Listen for presence events
+ * presenceService.addEventListener((event) => {
+ *   console.log(event.type, event.data);
+ * });
+ * ```
+ */
 class PresenceService {
     private static instance: PresenceService;
     private connectedListener: (() => void) | null = null;
@@ -80,13 +120,28 @@ class PresenceService {
     }
 
     // Getters
+
+    /** Get current session data */
     get currentSession() { return this._currentSession; }
+    /** Get all active sessions */
     get sessions() { return this._sessions; }
+    /** Get current presence status */
     get status() { return this._status; }
+    /** Get loading state */
     get loading() { return this._loading; }
+    /** Get error state */
     get error() { return this._error; }
+    /** Check if service is initialized */
     get isInitialized() { return this.initialized; }
+    /** Check if location consent is granted */
     get hasLocationConsent() { return this.locationConsent; }
+
+    /**
+ * Initialize presence tracking
+ * @param {any} user Current user object
+ * @param {PresenceConfig} config Optional configuration
+ * @throws {Error} If initialization fails
+ */
 
     private async initializePresence() {
         const connectedRef = ref(firebaseService.getDatabaseInstance(), '.info/connected');
@@ -146,6 +201,11 @@ class PresenceService {
 
         return `${browser}-${platform}`.replace(/[^a-zA-Z0-9-]/g, '');
     }
+
+    /**
+    * Request location tracking consent
+    * @returns {Promise<boolean>} Whether consent was granted
+    */
 
     async requestLocationConsent(): Promise<boolean> {
         if (!this.config.geolocation?.enabled) return false;
@@ -387,7 +447,11 @@ class PresenceService {
             this.locationWatcher = null;
         }
     }
-
+    /**
+      * Add presence event listener
+      * @param {Function} callback Event callback function
+      * @returns {Function} Cleanup function to remove listener
+      */
     addEventListener(callback: PresenceEventCallback) {
         this.eventListeners.add(callback);
         return () => this.eventListeners.delete(callback);
@@ -396,7 +460,9 @@ class PresenceService {
     private emitEvent(event: PresenceEvent) {
         this.eventListeners.forEach(callback => callback(event));
     }
-
+    /**
+         * Cleanup presence tracking
+         */
     dispose() {
         this.stopLocationWatcher();
         if (this.connectedListener) {
