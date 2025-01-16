@@ -12,6 +12,7 @@ export { firekitAwaitableDoc } from './firestore/awaitable-doc.svelte.js'
 export { firekitDocMutations } from './firestore/document-mutations.svelte.js';
 export { firekitCollection } from './firestore/collection.svelte.js';
 export { firekitDoc } from './firestore/doc.svelte.js';
+export { firekitCollectionGroup } from './firestore/collection-group.svelte.js';
 
 // realtime services
 export { firekitRealtimeDB } from './realtime/realtime.svelte.js';
